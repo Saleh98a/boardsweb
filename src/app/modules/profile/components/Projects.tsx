@@ -1,14 +1,31 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {Card2} from '../../../../_metronic/partials/content/cards/Card2'
 import {IconUserModel} from '../ProfileModels'
 
 export function Projects() {
+  const [projects, setProjects] = useState([
+    {id: 1, firstName: 'Project 1'},
+    {id: 2, firstName: 'Project 2'},
+  ]);
+   useEffect(() => {
+      fetch('http://localhost:8080/employees')
+         .then((response) => response.json())
+         .then((data) => {
+            console.log(data);
+            setProjects(data['data']);
+         })
+         .catch((err) => {
+            console.log(err.message);
+         });
+   }, []);
+
+   
   return (
     <>
       <div className='d-flex flex-wrap flex-stack mb-6'>
         <h3 className='fw-bolder my-2'>
-          My Projects
+          My Projects 
           <span className='fs-6 text-gray-400 fw-bold ms-1'>Active</span>
         </h3>
 
@@ -37,7 +54,28 @@ export function Projects() {
           </a>
         </div>
       </div>
-
+      
+      <div className='row g-6 g-xl-9' style={{marginBottom: '20px'}}>
+        {
+          projects.map((pr: Project, i: number) => {
+            return <div className='col-md-6 col-xl-4' key={i}>
+              <Card2
+                icon='/media/svg/brand-logos/xing-icon.svg'
+                badgeColor='primary'
+                status='In Progress'
+                statusColor='primary'
+                title={pr.firstName}
+                description='CRM App application to HR efficiency'
+                date='Start Date: Mar 14, 2021'
+                budget='End Date: Mar 14, 2022'
+                progress={40}
+                users={users5}
+              />
+            </div>
+          })
+        }
+      </div>
+      
       <div className='row g-6 g-xl-9'>
         <div className='col-md-6 col-xl-4'>
           <Card2
@@ -281,3 +319,15 @@ const users9 = [
   {name: 'Meloday Macy', avatar: '/media/avatars/150-3.jpg'},
   {name: 'Rabbin Watterman', initials: 'S', color: 'danger'},
 ]
+
+class Project {
+  id: number
+  firstName: string
+  createDate?: Date
+
+  constructor(id: number, firstName: string, createDate?: Date) {
+    this.id = id;
+    this.firstName = firstName;
+    this.createDate = createDate;
+  }
+};
