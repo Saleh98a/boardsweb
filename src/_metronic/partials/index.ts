@@ -31,6 +31,7 @@ export * from './content/portal/Portal'
 export * from './modals/create-app/Main'
 export * from './modals/invite-users/InviteUsers'
 export * from './modals/upgrade-plan/UpgradePlan'
+export * from './modals/new-project/NewProjectModal'
 
 // chat
 export * from './chat/ChatInner'

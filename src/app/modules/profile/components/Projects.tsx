@@ -1,7 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
+import { KTSVG } from '../../../../_metronic/helpers'
 import {Card2} from '../../../../_metronic/partials/content/cards/Card2'
 import {IconUserModel} from '../ProfileModels'
+
 
 export function Projects() {
   const [projects, setProjects] = useState([
@@ -44,11 +46,13 @@ export function Projects() {
               <option value='In Progress'>Completed</option>
             </select>
           </div>
+
           <a
             href='#'
-            className='btn btn-primary btn-sm'
+            className='btn btn-sm btn-primary'
             data-bs-toggle='modal'
-            data-bs-target='#kt_modal_create_project'
+            data-bs-target='#kt_modal_new_project'
+            id='kt_toolbar_primary_button'
           >
             New Project
           </a>

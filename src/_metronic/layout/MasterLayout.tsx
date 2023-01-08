@@ -14,6 +14,7 @@ import {
   Main,
   InviteUsers,
   UpgradePlan,
+  NewProjectModal
 } from '../partials'
 
 const MasterLayout: React.FC = ({children}) => {
@@ -44,6 +45,7 @@ const MasterLayout: React.FC = ({children}) => {
       <Main />
       <InviteUsers />
       <UpgradePlan />
+      <NewProjectModal/>
       {/* end:: Modals */}
 
       <MasterInit />
