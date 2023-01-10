@@ -3,6 +3,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { KTSVG } from '../../../../_metronic/helpers'
 import {Card2} from '../../../../_metronic/partials/content/cards/Card2'
 import {IconUserModel} from '../ProfileModels'
+import { Project } from '../../../Barry';
 
 
 export function Projects() {
@@ -323,15 +324,3 @@ const users9 = [
   {name: 'Meloday Macy', avatar: '/media/avatars/150-3.jpg'},
   {name: 'Rabbin Watterman', initials: 'S', color: 'danger'},
 ]
-
-class Project {
-  id: number
-  firstName: string
-  createDate?: Date
-
-  constructor(id: number, firstName: string, createDate?: Date) {
-    this.id = id;
-    this.firstName = firstName;
-    this.createDate = createDate;
-  }
-};
