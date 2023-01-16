@@ -3,24 +3,19 @@ import React, { FC, useEffect, useState } from 'react'
 import { KTSVG } from '../../../../_metronic/helpers'
 import {Card2} from '../../../../_metronic/partials/content/cards/Card2'
 import {IconUserModel} from '../ProfileModels'
-import { Project } from '../../../Barry';
+import { BarryAPI, Project } from '../../../Barry';
 
 
 export function Projects() {
-  const [projects, setProjects] = useState([
-    {id: 1, firstName: 'Project 1'},
-    {id: 2, firstName: 'Project 2'},
-  ]);
+  const [projects, setProjects] = useState<Project[]>([]);
    useEffect(() => {
-      fetch('http://localhost:8080/employees')
-         .then((response) => response.json())
-         .then((data) => {
-            console.log(data);
-            setProjects(data['data']);
-         })
-         .catch((err) => {
-            console.log(err.message);
-         });
+    BarryAPI.projects.get({managerId: 2}, (newProjects: Array<Project>, error: Error|null) => {
+      if(!newProjects || newProjects.length == 0 || error != null){
+        // Failed to fetch 
+      } else {
+        setProjects(newProjects);
+      }
+    })
    }, []);
 
    
@@ -69,7 +64,7 @@ export function Projects() {
                 badgeColor='primary'
                 status='In Progress'
                 statusColor='primary'
-                title={pr.firstName}
+                title={pr.name}
                 description='CRM App application to HR efficiency'
                 date='Start Date: Mar 14, 2021'
                 budget='End Date: Mar 14, 2022'
