@@ -4,19 +4,27 @@ import { KTSVG } from '../../../../_metronic/helpers'
 import {Card2} from '../../../../_metronic/partials/content/cards/Card2'
 import {IconUserModel} from '../ProfileModels'
 import { BarryAPI, Project } from '../../../Barry';
+import {Link} from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 
 export function Projects() {
+  const history = useHistory();
   const [projects, setProjects] = useState<Project[]>([]);
-   useEffect(() => {
-    BarryAPI.projects.get({managerId: 2}, (newProjects: Array<Project>, error: Error|null) => {
+
+  useEffect(() => {
+    BarryAPI.projects.get({}, (newProjects: Array<Project>, error: Error|null) => {
       if(!newProjects || newProjects.length == 0 || error != null){
         // Failed to fetch 
       } else {
         setProjects(newProjects);
       }
     })
-   }, []);
+  }, []);
+
+   function didClickProject(project: Project) {
+    history.push('/project-page/');
+   }
 
    
   return (
@@ -58,7 +66,7 @@ export function Projects() {
       <div className='row g-6 g-xl-9' style={{marginBottom: '20px'}}>
         {
           projects.map((pr: Project, i: number) => {
-            return <div className='col-md-6 col-xl-4' key={i}>
+            return <div className='col-md-6 col-xl-4' key={i} onClick={() => {didClickProject(pr)}}>
               <Card2
                 icon='/media/svg/brand-logos/xing-icon.svg'
                 badgeColor='primary'

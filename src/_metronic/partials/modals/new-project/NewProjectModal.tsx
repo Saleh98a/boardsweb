@@ -60,7 +60,7 @@ const NewProjectModal: FC = () => {
     }
 
     console.log('submit with values:', values);
-    BarryAPI.projects.create(new Project(0, 2, 3, values.appName, values.startDate), function(project: Project|null, error: Error|null) {
+    BarryAPI.projects.create(new Project(0, 4, 5, values.appName, values.startDate), function(project: Project|null, error: Error|null) {
       console.log('project:', project, 'error:', error);
     });
   }
