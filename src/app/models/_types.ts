@@ -3,6 +3,8 @@ import { isArrayTypeNode } from "typescript";
 export interface BarryObject {
     id: number;
     get getObjectType(): string|undefined;
+
+    merge(props: any): void;
 }
 
 export function isInstanceOfBarry(object: any, data?: any): object is BarryObject {
@@ -58,12 +60,16 @@ export class BarryObjectStore {
 
     public decode<T extends new (...a: any[])=> any>(TCreator: T, props: any): T {
         if(!isInstanceOfBarry(TCreator, props) || !props || !props.id || isNaN(props.id)){
+            if(props instanceof TCreator)
+                return props;
             return new TCreator(props);
         }
         
         const objectType: string|undefined = TCreator.prototype.getObjectType;
         if(!objectType || objectType.length === 0){
             // There's no barry object type specified.
+            if(props instanceof TCreator)
+                return props;
             return new TCreator(props);
         }
 
@@ -72,12 +78,18 @@ export class BarryObjectStore {
 
         if(!stored){
             // There's no stored object.
-            const decoded: T = new TCreator(props);
-            const br: BarryObject = decoded as any;
-            this.add(br);
-            return decoded;
+            if(props instanceof TCreator){
+                this.add(props);
+                return props;
+            } else {
+                const decoded: T = new TCreator(props);
+                const br: BarryObject = decoded as any;
+                this.add(br);
+                return decoded;
+            }
         } else {
-            // There's a stored object, merge and returns the existing object.
+            // There's a stored object, merge and return the existing object.
+            stored.merge(props);
             return (stored as any) as T;
         }
     }
@@ -149,8 +161,7 @@ export class BarryResponse<T extends new (...a: any[])=> any> {
         if(props.data){
             // There's a data key.
             if(Array.isArray(props.data)){
-                this.data = new Array<T>();
-                props.data!.map(function(value: any): T {
+                this.data = props.data!.map(function(value: any): T {
                     return BarryObjectStore.Instance.decode(TCreator, value) ?? (new TCreator(value));
                 })
             } else {
@@ -160,8 +171,7 @@ export class BarryResponse<T extends new (...a: any[])=> any> {
         } else {
             const prs: any = props;
             if(Array.isArray(prs)){
-                this.data = new Array<T>();
-                prs.map(function(value: any): T {
+                this.data = prs.map(function(value: any): T {
                     return BarryObjectStore.Instance.decode(TCreator, value) ?? (new TCreator(value));
                 })
             } else {
@@ -273,6 +283,10 @@ export class User implements Person, BarryObject {
         return 'user';
     }
 
+    merge(props: any): void {
+        // Merge new object here.
+    }
+
     isManager(): boolean {
         return this.role == PersonRole.Manager;
     }
@@ -368,6 +382,7 @@ export abstract class ProjectItem implements BarryObject {
     }
 
     abstract get getObjectType(): string|undefined;
+    abstract merge(props: any): void;
 }
 
 
@@ -388,6 +403,10 @@ export class Epic extends ProjectItem {
 
     get getObjectType(): string|undefined {
         return 'epic';
+    }
+
+    merge(props: any): void {
+        // Merge new object here.
     }
 }
 
@@ -412,6 +431,10 @@ export class Feature extends ProjectItem {
 
     get getObjectType(): string|undefined {
         return 'feature';
+    }
+
+    merge(props: any): void {
+        // Merge new object here.
     }
 }
 
@@ -445,15 +468,21 @@ export class Project implements BarryObject {
       this.name = props.name;
       this.createDate = props.createDate;
 
-      this.manager = props.manager ? new Manager(props.manager!) : undefined;
+      const mngr: any|undefined = props.manager ? BarryObjectStore.Instance.decode(Manager, props.manager!) : undefined;
+      this.manager = mngr;
       this._managerId = this.manager?.id || props.managerId;
 
-      this.client = props.client ? new Client(props.client!) : undefined;
+      const clnt: any|undefined = props.client ? BarryObjectStore.Instance.decode(Client, props.client!) : undefined;
+      this.client = clnt;
       this._clientId = this.client?.id || props.clientId;
     }
 
     get getObjectType(): string|undefined {
         return 'project';
+    }
+
+    merge(props: any): void {
+        // Merge new object here.
     }
 
     get managerId(): number|undefined {

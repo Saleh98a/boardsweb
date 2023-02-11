@@ -13,7 +13,7 @@ export function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    BarryAPI.projects.get({projectId: 9}, (newProjects: Array<Project>, error: Error|null) => {
+    BarryAPI.projects.get({}, (newProjects: Array<Project>, error: Error|null) => {
       if(!newProjects || newProjects.length == 0 || error != null){
         // Failed to fetch 
       } else {
