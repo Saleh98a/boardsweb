@@ -2,71 +2,19 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { string } from 'yup';
 
-class User {
-    id: number;
-    role: string;
-    name: string;
-    image: string|null;
+import '../app/models/_types';
+import { User, Employee, Project, Manager, PersonRole, BarryResponse } from '../app/models/_types';
 
-    public constructor(id: number, role: string, name: string, image: string|null){
-        this.id = id;
-        this.role = role;
-        this.name = name;
-        this.image = image;
-    }
 
-    isManager(): boolean {
-        return this.role == 'manager';
-    }
-
-    isEmployee(): boolean {
-        return this.role == 'employee' || this.role == 'manager';
-    }
-
-    isClient(): boolean {
-        return this.role == 'client';
-    }
-
-}
-
-class Manager extends User {
-
-    
-}
-
-class Project {
-    id: number
-    managerId: number
-    clientId: number|null;
-    name: string
-    createDate?: Date
-  
-    constructor(id: number, managerId: number, clientId: number, name: string, createDate?: Date) {
-      this.id = id;
-      this.managerId = managerId;
-      this.clientId = clientId;
-      this.name = name;
-      this.createDate = createDate;
-    }
-
-    toFormdata(): FormData {
-        let formData = new FormData();
-        
-        formData.append("managerId", this.managerId.toString());
-        formData.append("name", this.name);
-        if(this.createDate && this.createDate != null)
-            formData.append("startDate", this.createDate!.toString());
-        if(this.clientId && this.clientId != null)
-            formData.append("clientId", this.clientId!.toString());
-
-        return formData;
-    }
-  };
-
+type ProjectFilter = {
+    projectId?: number,
+    managerId?: number,
+    clientId?: number
+} 
 const BarryAPI = (function(){
     return { // public interface
         projects: {
-            get: function(filter: {managerId?: number, clientId?: number} = {}, callback: (projects: Array<Project>, error: Error|null) => void){
+            get: function(filter: ProjectFilter = {}, callback: (projects: Array<Project>, error: Error|null) => void){
                 var params: {[key: string]: any;} = {};
                 var keys = Object.keys(filter);
                 var values = Object.values(filter);
@@ -75,11 +23,19 @@ const BarryAPI = (function(){
                         params[keys[index]] = values[index];
                 }
 
-                fetch('http://localhost:8080/projects/?' + new URLSearchParams(params))
+                let url = 'http://localhost:8080/projects/' + ((filter.projectId && !isNaN(filter.projectId!)) ? ''+filter.projectId!+'/' : '');
+                console.log('url', url);
+                fetch(url +'?' + new URLSearchParams(params))
                     .then((response) => response.json())
                     .then((data) => {
                         console.log(data);
-                        callback(data['data'], null);
+                        const resp = new BarryResponse(Project, data);
+                        console.log('response:', resp);
+                        if(Array.isArray(data['data'])){
+                            callback(data['data'], null);
+                        } else {
+                            callback([data['data']], null);
+                        }
                     })
                     .catch((err) => {
                         console.log(err.message);
@@ -104,7 +60,8 @@ const BarryAPI = (function(){
                         callback(null, err);
                     });
             }
-        }
+        },
+        
     }
 })();
 
@@ -118,7 +75,12 @@ const BarryApp = (function() {
     return { // public interface
       currentUser: function (): User {
         // All private members are accessible here
-        return new User(2, 'manager', 'Yasmin', null);
+        return new Manager({
+            id: 2,
+            name: 'Frodo Baggins',
+            email: 'manager@panel.com',
+            role: PersonRole.Manager,
+        });
       },
     };
   })();

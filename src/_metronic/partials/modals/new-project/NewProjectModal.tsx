@@ -60,7 +60,14 @@ const NewProjectModal: FC = () => {
     }
 
     console.log('submit with values:', values);
-    BarryAPI.projects.create(new Project(0, 4, 5, values.appName, values.startDate), function(project: Project|null, error: Error|null) {
+    // 0, 4, 5, values.appName, values.startDate
+    BarryAPI.projects.create(new Project({
+      id: 0,
+      managerId: 2,
+      clientId: 4,
+      name: values.appName,
+      createDate: values.startDate
+    }), function(project: Project|null, error: Error|null) {
       console.log('project:', project, 'error:', error);
     });
   }
@@ -94,7 +101,7 @@ const NewProjectModal: FC = () => {
               id='kt_modal_create_app_stepper'
             >
 
-<div className='d-flex justify-content-center justify-content-xl-start flex-row-auto w-100 w-xl-300px'>
+              <div className='d-flex justify-content-center justify-content-xl-start flex-row-auto w-100 w-xl-300px' style={{display: 'none'}}>
                 <div className='stepper-nav ps-lg-10'>
                   <div className='stepper-item current' data-kt-stepper-element='nav'>
                     <div className='stepper-line w-40px'></div>

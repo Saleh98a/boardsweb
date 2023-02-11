@@ -13,7 +13,7 @@ export function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
-    BarryAPI.projects.get({}, (newProjects: Array<Project>, error: Error|null) => {
+    BarryAPI.projects.get({projectId: 9}, (newProjects: Array<Project>, error: Error|null) => {
       if(!newProjects || newProjects.length == 0 || error != null){
         // Failed to fetch 
       } else {
@@ -23,7 +23,9 @@ export function Projects() {
   }, []);
 
    function didClickProject(project: Project) {
-    history.push('/project-page/');
+    history.push('/project-page/', {
+      project: project
+    });
    }
 
    
@@ -72,7 +74,7 @@ export function Projects() {
                 badgeColor='primary'
                 status='In Progress'
                 statusColor='primary'
-                title={pr.name}
+                title={pr.name ?? 'Unnamed Project'}
                 description='CRM App application to HR efficiency'
                 date='Start Date: Mar 14, 2021'
                 budget='End Date: Mar 14, 2022'
