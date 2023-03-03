@@ -1,4 +1,4 @@
-import { createContext, FC, PropsWithChildren, useEffect, useState } from "react";
+import React, { createContext, FC, PropsWithChildren, useEffect, useState } from "react";
 import { BarryObjectStore, Client, ClientProps, Employee, EmployeeProps, Manager, ManagerProps, User, UserProps } from "./models/_types";
 import {shallowEqual, useSelector, connect, useDispatch, ConnectedProps} from 'react-redux'
 import {RootState} from '../setup'
@@ -15,7 +15,7 @@ const BarryContextPropsDefaultProps: BarryContextProps = {
 export const BarryContext = createContext<BarryContextProps>(BarryContextPropsDefaultProps);
 
 export const useBarry = () => {
-    return BarryContext;
+    return React.useContext(BarryContext);
 }
 
 

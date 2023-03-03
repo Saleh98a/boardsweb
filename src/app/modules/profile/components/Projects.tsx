@@ -6,10 +6,13 @@ import {IconUserModel} from '../ProfileModels'
 import { BarryAPI, Project } from '../../../Barry';
 import {Link} from 'react-router-dom';
 import { useHistory } from "react-router-dom";
+import { useBarry } from '../../../BarryContext';
+import { Manager } from '../../../models/_types';
 
 
 export function Projects() {
   const history = useHistory();
+  const {currentUser} = useBarry();
   const [projects, setProjects] = useState<Project[]>([]);
 
   useEffect(() => {
@@ -53,7 +56,7 @@ export function Projects() {
             </select>
           </div>
 
-          <a
+          {currentUser && (currentUser instanceof Manager) && <a
             href='#'
             className='btn btn-sm btn-primary'
             data-bs-toggle='modal'
@@ -61,7 +64,7 @@ export function Projects() {
             id='kt_toolbar_primary_button'
           >
             New Project
-          </a>
+          </a>}
         </div>
       </div>
       
