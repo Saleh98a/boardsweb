@@ -7,7 +7,15 @@ export function Logout() {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(auth.actions.logout())
-    document.location.reload()
+    // setTimeout(()=> {
+    //   document.location.reload()
+    // }, 200)
+
+    return () => {
+      setTimeout(()=>{
+        document.location.reload();
+      }, 100)
+    }
   }, [dispatch])
 
   return (

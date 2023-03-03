@@ -55,9 +55,9 @@ export function Registration() {
       setLoading(true)
       setTimeout(() => {
         register(values.email, values.firstname, values.lastname, values.password)
-          .then(({data: {accessToken}}) => {
+          .then(({data: {email, password}}) => {
             setLoading(false)
-            dispatch(auth.actions.login(accessToken))
+            dispatch(auth.actions.login('', email, password))
           })
           .catch(() => {
             setLoading(false)

@@ -22,8 +22,8 @@ const loginSchema = Yup.object().shape({
 })
 
 const initialValues = {
-  email: 'admin@demo.com',
-  password: 'demo',
+  email: 'employee1@barry.com',
+  password: 'Password1',
 }
 
 /*
@@ -42,14 +42,34 @@ export function Login() {
       setLoading(true)
       setTimeout(() => {
         login(values.email, values.password)
-          .then(({data: {accessToken}}) => {
-            setLoading(false)
-            dispatch(auth.actions.login(accessToken))
+          .then((response) => {
+            const newResponse = response;
+            if(response.data && response.data.data){
+              newResponse.data = response.data.data;
+            } else {
+              const error: any = new Error(response.data?.errorMessage ?? "");
+              error.statusCode = response.data?.errorCode ?? 0;
+              error.status = response.data?.status ?? false;
+              throw error;
+            }
+            console.log('LOGIN::data:', response);
+            return newResponse;
           })
-          .catch(() => {
+          .then(({data: {accessToken, email, password}}) => {
+            console.log('LOGIN::data:then', email, password);
+            setLoading(false)
+            const disResult = dispatch(auth.actions.login(accessToken, email, password))
+            console.log('LOGIN::data:dispatch', disResult);
+          })
+          .catch((error) => {
             setLoading(false)
             setSubmitting(false)
-            setStatus('The login detail is incorrect')
+            if(error && error.message && (typeof error.statusCode === 'number') && !isNaN(error.statusCode) && error.status === false){
+              setStatus(error.message)
+            } else {
+              setStatus('The login detail is incorrect')
+            }
+            
           })
       }, 1000)
     },

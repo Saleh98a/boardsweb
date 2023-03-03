@@ -39,8 +39,11 @@ export function mockAuth(mock: MockAdapter) {
         password,
         roles: [2], // Manager
         auth: {
-          accessToken: 'access-token-' + Math.random(),
-          refreshToken: 'access-token-' + Math.random(),
+          accountId: "1",
+          email: "employee1@barry.com",
+          password: "Password1"
+          // accessToken: 'access-token-' + Math.random(),
+          // refreshToken: 'access-token-' + Math.random(),
         },
         pic: process.env.PUBLIC_URL + '/media/users/default.jpg',
       }
@@ -75,7 +78,9 @@ export function mockAuth(mock: MockAdapter) {
       Authorization && Authorization.startsWith('Bearer ') && Authorization.slice('Bearer '.length)
 
     if (accessToken) {
-      const user = UsersTableMock.table.find((x) => x.auth?.accessToken === accessToken)
+      const user = UsersTableMock.table.find((x) => { 
+        return x.auth && ('accessToken' in x.auth) && (x.auth['accessToken'] ?? undefined) === accessToken
+      })
 
       if (user) {
         return [200, {...user, password: undefined}]

@@ -257,7 +257,13 @@ export class User implements Person, BarryObject {
     pic: string | undefined;
 
     public constructor(props: UserProps){
-        this.id = props.id;
+        if(props.id && typeof props.id !== 'undefined'){
+            this.id = props.id;
+        } else if((props as any).accountId && typeof (props as any).accountId !== 'undefined'){
+            this.id = (props as any).accountId;
+        } else {
+            this.id = props.id;
+        }
         this.role = props.role ?? PersonRole.Employee;
         this.email = props.email;
         this.firstName = props.firstName;
