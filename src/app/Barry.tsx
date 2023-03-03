@@ -1,9 +1,7 @@
-import PropTypes from 'prop-types';
-import axios from 'axios';
-import { string } from 'yup';
 
 import '../app/models/_types';
 import { User, Employee, Project, Manager, PersonRole, BarryResponse } from '../app/models/_types';
+import { createContext, FC, PropsWithChildren } from 'react';
 
 
 type ProjectFilter = {
@@ -50,6 +48,7 @@ const BarryAPI = (function(){
                 fetch('http://localhost:8080/projects', {method: 'POST', body: newProject.toFormdata()})
                     .then((response) => response.json())
                     .then((data) => {
+                        console.log('data:', data);
                         if(data == null || !data['data'] || data['data'] == null)
                             return callback(null, new Error('Request returned with no project object'));
         
