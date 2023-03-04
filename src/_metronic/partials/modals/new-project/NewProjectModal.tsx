@@ -4,6 +4,8 @@ import {Formik, Form, FormikValues, Field, ErrorMessage} from 'formik'
 import * as Yup from 'yup'
 import {StepperComponent} from '../../../assets/ts/components'
 import {BarryApp, BarryAPI, Project } from '../../../../app/Barry';
+import { useBarry } from '../../../../app/BarryContext'
+import { Manager } from '../../../../app/models/_types'
 
 interface ICreateAccount {
     appName: string
@@ -24,6 +26,7 @@ interface ICreateAccount {
 
 
 const NewProjectModal: FC = () => {
+  const {currentUser} = useBarry();
   const stepperRef = useRef<HTMLDivElement | null>(null)
   const stepper = useRef<StepperComponent | null>(null)
   const [currentSchema, setCurrentSchema] = useState(createAppSchema[0])
@@ -58,6 +61,20 @@ const NewProjectModal: FC = () => {
       stepper.current.goto(1)
       actions.resetForm()
     }
+
+    if(!currentUser || !(currentUser instanceof Manager)){
+      return;
+    }
+
+    currentUser.create({
+      name: values.appName,
+      startDate: values.startDate
+    }).then((response)=>{
+      console.log('project::success:', response);
+    }).catch((error) => {
+      console.log('project::fail:', error);
+    })
+    return;
 
     console.log('submit with values:', values);
     // 0, 4, 5, values.appName, values.startDate

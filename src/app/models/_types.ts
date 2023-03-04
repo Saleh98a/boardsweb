@@ -1,8 +1,10 @@
-import { isArrayTypeNode } from "typescript";
+import { createProject } from "./_requests";
+import { BarryEventPublisher } from './BarryEventListner';
 
 export interface BarryObject {
     id: number;
     get getObjectType(): string|undefined;
+    publisher: BarryEventPublisher;
 
     merge(props: any): void;
 }
@@ -255,6 +257,7 @@ export class User implements Person, BarryObject {
     firstName: string|undefined;
     lastName: string|undefined;
     pic: string | undefined;
+    publisher: BarryEventPublisher;
 
     public constructor(props: UserProps){
         if(props.id && typeof props.id !== 'undefined'){
@@ -270,6 +273,7 @@ export class User implements Person, BarryObject {
         this.lastName = props.lastName;
         this.name = props.name;
         this.pic = props.pic;
+        this.publisher = new BarryEventPublisher();
 
         if(!props.name || props.name!.length === 0){
             // There's no full name property.
@@ -287,6 +291,19 @@ export class User implements Person, BarryObject {
 
     get getObjectType(): string | undefined {
         return 'user';
+    }
+
+    get roleString(): string|undefined {
+        switch (this.role) {
+            case PersonRole.Employee:
+                return "Employee";
+            case PersonRole.Manager:
+                return "Manager";
+            case PersonRole.Client:
+                return "Client";
+            default:
+                return undefined;
+        }
     }
 
     merge(props: any): void {
@@ -317,12 +334,30 @@ export class Employee extends User {
     projects: Array<Project>
 
     public constructor(props: EmployeeProps){
+        props.role = !props || props.role === undefined || typeof props.role === 'undefined' ? PersonRole.Employee : props.role;
         super(props);
-        this.projects = props.projects ?? (new Array<Project>());
+
+        this.projects = ((): Array<Project> => {
+            if(!props.projects){
+                return [];
+            } else if(Array.isArray(props.projects)){
+                return props.projects.map(function(value: any): Project {
+                    return (BarryObjectStore.Instance.decode(Project, value) ?? (new Project(value))) as any;
+                })
+            } else {
+                const decoded = BarryObjectStore.Instance.decode(Project, props.projects) as any;
+                return decoded !== undefined ? [decoded!] : [];
+            }
+        })();
     }
 
     override get getObjectType(): string|undefined {
         return 'employee';
+    }
+
+    public addProject(project: Project){
+        // Add project here.
+        this.projects.push(project);
     }
 }
 
@@ -334,12 +369,38 @@ export interface ManagerProps extends EmployeeProps {
 export class Manager extends Employee implements ManagerProps {
 
     public constructor(props: ManagerProps){
+        props.role = !props || props.role === undefined || typeof props.role === 'undefined' ? PersonRole.Manager : props.role;
         super(props);
+
+        this.projects.forEach(project => {
+            project.setManager(this);
+        })
     }
 
     override get getObjectType(): string|undefined {
         return 'manager';
     }
+
+    public override addProject(project: Project): void {
+        project.setManager(this);
+        super.addProject(project);
+    }
+
+    create(project: CreateProjectParameters, client?: Client|undefined){
+        return createProject({...project, ...{managerId: this.id, clientId: client?.id ?? 3}}).then(projects => {
+            projects.data.forEach((pr: any)=>{
+                this.addProject(pr);
+            })
+            return projects;
+        })
+    }
+}
+
+export interface CreateProjectParameters {
+    name: string,
+    description?: string|undefined,
+    startDate?: Date|undefined
+    endDate?: Date|undefined
 }
 
 
@@ -352,8 +413,20 @@ export class Client extends User {
     projects: Array<Project>
 
     public constructor(props: ClientProps){
+        props.role = !props || props.role === undefined || typeof props.role === 'undefined' ? PersonRole.Client : props.role;
         super(props);
-        this.projects = props.projects ?? (new Array<Project>());
+        this.projects = this.projects = ((): Array<Project> => {
+            if(!props.projects){
+                return [];
+            } else if(Array.isArray(props.projects)){
+                return props.projects.map(function(value: any): Project {
+                    return (BarryObjectStore.Instance.decode(Project, value) ?? (new Project(value))) as any;
+                })
+            } else {
+                const decoded = BarryObjectStore.Instance.decode(Project, props.projects) as any;
+                return decoded !== undefined ? [decoded!] : [];
+            }
+        })();
     }
 
     override get getObjectType(): string|undefined {
@@ -368,6 +441,7 @@ export class Client extends User {
 export interface ProjectItemProps {
     id: number
     name?: string
+    description?: string
     createDate: Date
     lastModified?: Date
     creator?: Person
@@ -376,15 +450,19 @@ export interface ProjectItemProps {
 export abstract class ProjectItem implements BarryObject {
     id: number
     name: string|undefined
+    description?: string|undefined
     createDate: Date
     lastModified: Date|undefined
     creator: Person|undefined
+    publisher: BarryEventPublisher;
 
     public constructor(props: ProjectItemProps){
         this.id = props.id;
         this.name = props.name;
+        this.description = props.description;
         this.createDate = props.createDate;
         this.creator = props.creator;
+        this.publisher = new BarryEventPublisher();
     }
 
     abstract get getObjectType(): string|undefined;
@@ -453,6 +531,7 @@ export type ProjectProps = {
     managerId: number
     clientId: number|undefined;
     name: string|undefined;
+    description?: string|undefined
     createDate?: Date;
 
     manager?: Manager;
@@ -464,15 +543,20 @@ export class Project implements BarryObject {
     private _managerId: number
     private _clientId: number|undefined;
     name: string|undefined
+    description: string|undefined
     createDate: Date|undefined
 
     manager: Manager|undefined;
     client: Client|undefined;
+
+    publisher: BarryEventPublisher;
   
     constructor(props: ProjectProps) {
       this.id = props.id;
       this.name = props.name;
-      this.createDate = props.createDate;
+      this.createDate = props.createDate && typeof props.createDate === 'string' ? (new Date(props.createDate!)) : props.createDate;
+      this.description = props.description;
+      this.publisher = new BarryEventPublisher();
 
       const mngr: any|undefined = props.manager ? BarryObjectStore.Instance.decode(Manager, props.manager!) : undefined;
       this.manager = mngr;
@@ -493,6 +577,11 @@ export class Project implements BarryObject {
 
     get managerId(): number|undefined {
         return this._managerId ?? this.manager?.id;
+    }
+
+    setManager(manager: Manager){
+        this.manager = manager;
+        this._managerId = manager.id;
     }
 
     get clientId(): number|undefined {

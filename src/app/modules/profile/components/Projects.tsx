@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { KTSVG } from '../../../../_metronic/helpers'
 import {Card2} from '../../../../_metronic/partials/content/cards/Card2'
 import {IconUserModel} from '../ProfileModels'
@@ -7,15 +7,26 @@ import { BarryAPI, Project } from '../../../Barry';
 import {Link} from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import { useBarry } from '../../../BarryContext';
-import { Manager } from '../../../models/_types';
+import { Employee, Manager, User } from '../../../models/_types';
+import { BarryEventListner } from '../../../models/BarryEventListner';
 
 
 export function Projects() {
   const history = useHistory();
   const {currentUser} = useBarry();
-  const [projects, setProjects] = useState<Project[]>([]);
+  const userListner = useRef<BarryEventListner|undefined>(undefined);
+  const [projects, setProjects] = useState<Project[]>((currentUser as Employee).projects);
+
+  function onUserChange(event: string, target: User, options: any|undefined){
+    console.log('publisher::user:onUserChange(\'' + event + '\', target:', target, 'options:', options);
+  }
 
   useEffect(() => {
+    if(!userListner.current && currentUser)
+      userListner.current = currentUser?.publisher.makeListner(listner => {
+        listner.addHandler('change', onUserChange);
+      });
+
     BarryAPI.projects.get({}, (newProjects: Array<Project>, error: Error|null) => {
       if(!newProjects || newProjects.length == 0 || error != null){
         // Failed to fetch 
@@ -23,9 +34,15 @@ export function Projects() {
         setProjects(newProjects);
       }
     })
+
+    return () => {
+      userListner.current?.removeFromPublisherWithHandlers(currentUser?.publisher, undefined, userListner);
+      console.log('publisher::user:', currentUser, 'listner:', userListner.current);
+    }
   }, []);
 
    function didClickProject(project: Project) {
+    userListner.current?.removeFromPublisherWithHandlers(currentUser?.publisher, undefined, userListner);
     history.push('/project-page/', {
       project: project
     });
@@ -37,24 +54,9 @@ export function Projects() {
       <div className='d-flex flex-wrap flex-stack mb-6'>
         <h3 className='fw-bolder my-2'>
           My Projects 
-          <span className='fs-6 text-gray-400 fw-bold ms-1'>Active</span>
         </h3>
 
         <div className='d-flex flex-wrap my-2'>
-          <div className='me-4'>
-            <select
-              name='status'
-              data-control='select2'
-              data-hide-search='true'
-              className='form-select form-select-sm form-select-white w-125px'
-              defaultValue='Active'
-            >
-              <option value='Active'>Active</option>
-              <option value='Approved'>In Progress</option>
-              <option value='Declined'>To Do</option>
-              <option value='In Progress'>Completed</option>
-            </select>
-          </div>
 
           {currentUser && (currentUser instanceof Manager) && <a
             href='#'
@@ -70,7 +72,7 @@ export function Projects() {
       
       <div className='row g-6 g-xl-9' style={{marginBottom: '20px'}}>
         {
-          projects.map((pr: Project, i: number) => {
+          ((currentUser as Employee)?.projects ?? []).map((pr: Project, i: number) => {
             return <div className='col-md-6 col-xl-4' key={i} onClick={() => {didClickProject(pr)}}>
               <Card2
                 icon='/media/svg/brand-logos/xing-icon.svg'
@@ -78,11 +80,10 @@ export function Projects() {
                 status='In Progress'
                 statusColor='primary'
                 title={pr.name ?? 'Unnamed Project'}
-                description='CRM App application to HR efficiency'
-                date='Start Date: Mar 14, 2021'
+                description={pr.description ?? ''}
+                date={pr && pr.createDate ? new Date(pr.createDate).toLocaleString() : ''}//'Start Date: Mar 14, 2021'
                 budget='End Date: Mar 14, 2022'
                 progress={40}
-                users={users5}
               />
             </div>
           })

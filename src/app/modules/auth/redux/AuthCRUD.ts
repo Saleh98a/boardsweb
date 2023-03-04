@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { date } from 'yup';
 import {AuthModel, CredentialsModel} from '../models/AuthModel'
 import {UserModel} from '../models/UserModel'
 

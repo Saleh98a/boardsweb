@@ -48,8 +48,8 @@ const ProfilePage: React.FC = () => {
           <PageTitle breadcrumbs={profileBreadCrumbs}>Connections</PageTitle>
           <Connections />
         </Route>
-        <Redirect from='/crafted/pages/profile' exact={true} to='/crafted/pages/profile/overview' />
-        <Redirect to='/crafted/pages/profile/overview' />
+        <Redirect from='/crafted/pages/profile' exact={true} to='/crafted/pages/profile/projects' />
+        <Redirect to='/crafted/pages/profile/projects' />
       </Switch>
     </>
   )
