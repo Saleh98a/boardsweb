@@ -1,7 +1,20 @@
-import React from "react";
-                  
-const ProjectPage: React.FC = () => {
-    return <>
+import React, { useEffect } from "react";
+import { Project } from "../Barry";
+import { useBarry } from "../BarryContext";
+  
+export type ProjectProps = {
+  project: Project
+}
+
+const ProjectPage: React.FC<ProjectProps> = ({project}) => {
+  const {currentUser} = useBarry();
+  console.log('PROJECT::project::', currentUser);
+  
+  useEffect(()=>{
+    console.log('PROJECT::project::', currentUser);
+  }, [])
+
+    return (<>
     <div className='d-flex flex-wrap flex-stack mb-6'>
         <h3 className='fw-bolder my-2'>
           My Projects 
@@ -37,7 +50,7 @@ const ProjectPage: React.FC = () => {
       </div>
 
       <h1>Hello From Project Page</h1>
-    </>
+    </>)
 }
 
 export default ProjectPage;
