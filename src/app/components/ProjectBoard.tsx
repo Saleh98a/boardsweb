@@ -34,7 +34,7 @@ const ProjectBoard: FC<ProjectBoardProps> = ({features, rerender, addFeatureColu
 
   useEffect(()=> {
 
-    console.log('ProjectBoard::useEffect:', features, 'state:', state);
+    console.log('ProjectBoard::useEffect:', features, 'renderer=\'' + rerender + '\'', 'state:', state);
     if(features !== state?.features)
       setState({ features: features, rerender: rerender, addFeatureColumn: addFeatureColumn !== false });
     else if(rerender !== state.rerender)
@@ -53,7 +53,7 @@ const ProjectBoard: FC<ProjectBoardProps> = ({features, rerender, addFeatureColu
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="full-width-child row d-flex flex-nowrap h-100 mb-8">
           {
-            state.features?.map((feature, index) => {
+            (state.features ?? []).map((feature, index) => {
               return(
                 <div className="col-auto"key={index}>
                   {<DroppableFeature feature={feature} index={index} deleteFeature={deleteFeature} createEpicHandler={onCreateEpicClick} />}

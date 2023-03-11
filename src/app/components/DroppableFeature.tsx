@@ -4,45 +4,110 @@ import '../app.css'
 import styled from '@emotion/styled'
 import { Droppable, Draggable, DropResult, OnDragEndResponder } from 'react-beautiful-dnd';
 import { Epic, Feature, Manager } from "../models/_types";
-import { Button } from "react-bootstrap-v5";
+import { Button, Dropdown } from "react-bootstrap-v5";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons'
 import { BarryEventListner } from "../models/BarryEventListner";
 import { useBarry } from "../BarryContext";
+import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
+import { CreateEpicModal, EpicSubmitProps } from "./CreateEpicModal";
 
+import Moment from 'react-moment';
+import 'moment-timezone';
 
 const grid = 8;
 
-const QuoteItem = styled.div`
-    width: 200px;
-    border: 1px solid grey;
-    margin-bottom: ${grid}px;
-    background-color: lightblue;
-    padding: ${grid}px;
-    `;
+const QuoteItem = styled.div``;
 
 
+type DraggableEpicContentProps = React.PropsWithChildren<{
+    epic: Epic
+    index: number
+    deleteHandler?: ((epic: Epic, index: number)=>void)|undefined
+}>;
 
-function DraggableEpic({ epic, index }: {epic: Epic; index: number}) {
+const DraggableEpicContent: FC<DraggableEpicContentProps> = ({epic, index, deleteHandler}) => {
+
+    function onDeleteClickHandler(){
+        deleteHandler && deleteHandler(epic, index);
+    }
+
+    return (
+        <div className="draggable-epic-content container-fluid p-0">
+            <div className="row justify-content-between g-0">
+                <div className="col-auto d-flex align-items-center">
+                    <span className="fw-bolder">{epic.name}</span>
+                </div>
+                <div className="col-auto">
+                <Dropdown>
+                    <Dropdown.Toggle className="options-button py-0 p-2" variant="none" size="sm" id="dropdown-basic">
+                        <FontAwesomeIcon icon={faEllipsisVertical}/>
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={onDeleteClickHandler}><FontAwesomeIcon icon={faTrashCan}/> &nbsp; Delete</Dropdown.Item>
+                    </Dropdown.Menu>
+                    </Dropdown>
+                </div>
+            </div>
+            <div className="row">
+                <p className="text-muted">
+                    { epic.description && epic.description.trim().length > 0 && (epic.description) }
+                </p>
+            </div>
+            { epic.startDate && <div className="row">
+                <p className="text-muted">
+                    <Moment>{ epic.startDate }</Moment>
+                </p>
+            </div>}
+        </div>
+    );
+}
+
+
+type DraggableEpicProps = DraggableEpicContentProps & {
+}
+
+function DraggableEpic({ epic, index, deleteHandler }: DraggableEpicProps) {
     return (
         <Draggable draggableId={`${epic.id}`} index={index}>
         {provided => (
             <QuoteItem
+            className="draggable-epic-container"
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             >
-            {epic.name}
+                <DraggableEpicContent epic={epic} index={index} deleteHandler={deleteHandler} />
             </QuoteItem>
         )}
         </Draggable>
     );
 }
 
-const DraggableEpicList: FC<{epics: Epic[]}> = ({epics}) => {
+type DraggableEpicListProps = {
+    epics: Epic[]
+    rerenderer?: number|undefined
+    deleteHandler?: ((epic: Epic, index: number)=>void)|undefined
+}
+
+const DraggableEpicList: FC<DraggableEpicListProps> = ({epics, rerenderer, deleteHandler}) => {
+    const [epicsRender, setEpicsRender] = useState<number|undefined>(rerenderer);
+    const [epicsState, setEpicsState] = useState<Epic[]>(epics);
+
+    useEffect(()=> {
+        console.log('epic::list::epics:', epics, 'state:', epics);
+        if(epics !== epicsState){
+            setEpicsState(epics);
+            if(rerenderer !== epicsRender)
+                setEpicsRender(rerenderer);
+        } else if(rerenderer !== epicsRender)
+            setEpicsRender(rerenderer);
+
+    }, [epics, rerenderer])
+
     return (
-    <>{epics.map((epic: Epic, index: number) => (
-        <DraggableEpic epic={epic} index={index} key={epic.id} />
+    <>{epicsState.map((epic: Epic, index: number) => (
+        <DraggableEpic epic={epic} index={index} key={epic.id} deleteHandler={deleteHandler} />
     ))}</>);
 };
 
@@ -59,10 +124,15 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({feature, index, deleteFeat
     const featureListner = useRef<BarryEventListner|undefined>(undefined);
     const [epics, setEpics] = useState<Epic[]>(feature.epics);
     const [epicsRender, setEpicsRender] = useState<number>(0);
-
+    const [isCreateEpicVisible, setCreateEpicVisible] = useState<boolean>(false);
 
     useEffect(() => {
         registerToFeature(feature);
+
+        console.log('ProjectBoard::useEffect:feature::', feature, 'epics:', epics);
+        if(epics !== feature.epics){
+            setEpics(feature?.epics ?? []);
+        }
 
         return () => {
             featureListner.current?.removeFromPublisherWithHandlers(feature?.publisher, undefined, featureListner);
@@ -73,10 +143,17 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({feature, index, deleteFeat
 
     function onFeatureChange(event: string, target: Feature, options: any|undefined){
         if(target === feature && options && options.name === 'epics'){
-            console.log('publisher::project:onProjectChange(\'' + event + '\', target:', target, 'options:', options);
-            setEpics(feature.epics);
+            console.log('publisher::project:onFeatureChange(\'' + event + '\', target:', target, 'options:', options);
+            setEpics(target.epics);
             setEpicsRender(Math.random()*100000);
         }
+    }
+
+    function onDeleteEpic(epic: Epic, i: number){
+        if(!epic || !feature)
+            return;
+
+        feature.delete(epic);
     }
 
     function deleteFeatureClick(){
@@ -85,14 +162,22 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({feature, index, deleteFeat
 
     function onCreateEpicClick(){
         createEpicHandler && createEpicHandler(feature, index);
+        setCreateEpicVisible(true);
+        // if(feature && feature instanceof Feature && currentUser && (currentUser instanceof Manager)){
+        //     feature.create({
+        //         name: 'Unnamed Epic',
+        //         description: 'Blank',
+        //         duration: 120
+        //     }, currentUser);
+        // }
+    }
 
-        if(feature && feature instanceof Feature && currentUser && (currentUser instanceof Manager)){
-            feature.create({
-                name: 'Unnamed Epic',
-                description: 'Blank',
-                duration: 120
-            }, currentUser);
-        }
+    function createEpicSubmit(epic: EpicSubmitProps){
+        if(!epic || epic === undefined || epic === null || !feature || feature === undefined || feature === null)
+            return;
+
+        if(currentUser && (currentUser instanceof Manager))
+            feature.create(epic, currentUser);
     }
 
 
@@ -112,29 +197,31 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({feature, index, deleteFeat
     }
 
     return (
-        <div className='droppable-feature pt-4'>
+    <div className='droppable-feature pt-4'>
         <div className="droppable-title mb-4 px-2 container-fluid">
             <div className="row justify-content-between">
-            <div className="col-auto d-flex align-items-center">
-                <span className="fw-bolder">{feature.name}</span>
-                <span className="fw-bolder text-muted mx-2">{feature.epics.length}</span>
-            </div>
-            <div className="col-auto">
-                <Button className="delete-button" variant="light" size="sm" onClick={deleteFeatureClick}><FontAwesomeIcon icon={faTrashCan}/></Button>
-            </div>
+                <div className="col-auto d-flex align-items-center">
+                    <span className="fw-bolder">{feature.name}</span>
+                    <span className="fw-bolder text-muted mx-2">{feature.epics.length}</span>
+                </div>
+                <div className="col-auto">
+                    <Button className="delete-button" variant="light" size="sm" onClick={deleteFeatureClick}><FontAwesomeIcon icon={faTrashCan}/></Button>
+                </div>
             </div>
         </div>
 
         <Droppable droppableId={`list-${feature.id}`}>
             {provided => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
-                <DraggableEpicList epics={epics} />
+                <DraggableEpicList epics={epics} rerenderer={epicsRender} deleteHandler={onDeleteEpic} />
                 {provided.placeholder}
             </div>
             )}
         </Droppable>
         <button className="add-epic-button w-100 mt-4" onClick={onCreateEpicClick}>Add Epic + </button>
-        </div>
+        
+        <CreateEpicModal isVisible={isCreateEpicVisible} onVisibility={(visible)=>setCreateEpicVisible(visible)} onSubmit={createEpicSubmit} />
+    </div>
     );
 }
 

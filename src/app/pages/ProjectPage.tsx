@@ -94,18 +94,22 @@ const ProjectPage: React.FC<ProjectProps> = ({}) => {
       setProject(newProject);
       setFeatures(newProject?.features ?? []);
     } else {
-
       registerToProject(newProject);
-
-      if(newProject && (!features || features === undefined || typeof features === 'undefined'))
-        setFeatures(newProject?.features ?? []);
     }
 
     return () => {
       projectListner.current?.removeFromPublisherWithHandlers(project?.publisher, undefined, projectListner);
       console.log('publisher::project:unmount', project, 'listner:', projectListner.current);
     }
-  });
+  }, [project]);
+
+  useEffect(() => {
+
+    let newProject: Project|undefined = restoreProject(project);
+    if(newProject && (!features || features === undefined || typeof features === 'undefined'))
+        setFeatures(newProject?.features ?? []);
+
+  }, [features])
 
   function onDragEnd(result: DropResult) {
     if (!result.destination) {

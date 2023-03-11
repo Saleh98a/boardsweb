@@ -489,7 +489,8 @@ export abstract class ProjectItem implements BarryObject {
         this.id = props.id;
         this.name = props.name;
         this.description = props.description;
-        this.createDate = props.createDate;
+        this.createDate = stringToDate(props.createDate) ?? props.createDate;
+        this.lastModified = stringToDate(props.lastModified) ?? props.lastModified;
         this.creator = props.creator;
         this.publisher = new BarryEventPublisher();
     }
@@ -504,10 +505,12 @@ export abstract class ProjectItem implements BarryObject {
 
 export interface EpicProps extends ProjectItemProps {
     feature?: Feature
+    startDate?: Date|undefined
 }
 
 export class Epic extends ProjectItem {
     feature: Feature|undefined
+    startDate: Date|undefined
     private _featureId: number|undefined = undefined;
 
     public constructor(props: EpicProps){
@@ -516,6 +519,8 @@ export class Epic extends ProjectItem {
         const ftr: any|undefined = props.feature ? BarryObjectStore.Instance.decode(Feature, props.feature!) : undefined;
         this.feature = ftr ?? BarryObjectStore.Instance.get('feature', (props as any).featureId);
         this._featureId = this.feature?.id ?? (props as any).featureId;
+
+        this.startDate = stringToDate(undefined);
     }
 
     get getObjectType(): string|undefined {
@@ -796,3 +801,21 @@ export class Project implements BarryObject {
         return formData;
     }
 };
+
+
+
+
+function stringToDate(dateString: any): Date|undefined {
+    if(!dateString || dateString === undefined || dateString === null || typeof dateString === 'undefined')
+        return undefined;
+    
+    if(Object.prototype.toString.call(dateString) === '[object Date]'){
+        return dateString as Date;
+    } else if(typeof dateString === 'string'){
+        return new Date(dateString);
+    } else if (dateString instanceof Date) {
+        return dateString;
+    } else {
+        return undefined;
+    }
+}

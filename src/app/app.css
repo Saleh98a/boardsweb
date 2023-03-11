@@ -63,3 +63,40 @@
 .delete-button:hover svg {
     color: red;
 }
+
+
+.options-button {
+    background-color: transparent !important;
+    color: #44536f;
+}
+
+.options-button:hover {
+    background-color: transparent !important;
+    color: #44536f;
+}
+
+.options-button:after {
+    display: none !important;
+}
+
+
+
+.draggable-epic-container {
+    width: 100%;
+    border: 1px solid #e9ebef;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background-color: white;
+    box-shadow: 0px 1px 2px #7171716b;
+    padding: 12px;
+    padding-bottom: 0px;
+}
+
+.draggable-epic-content {
+    background-color: transparent;
+    color: #58667e;
+}
+
+.draggable-epic-container:hover {
+    background-color: #f3f4f6;
+}
