@@ -1,0 +1,65 @@
+
+#kt_wrapper:has(.page-white) {
+    background-color: #ffffff !important;
+}
+
+#kt_content_container:has(.full-width-page) {
+    max-width: none !important;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.container-fluid .full-width-child {
+    padding-left: 0px !important;
+}
+
+.full-width-child {
+    margin-left: 88px;
+    margin-right: 88px;
+}
+
+.add-feature-button {
+    border: none;
+    background-color: #e4e4e4;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.add-feature-button:hover {
+    background-color: #cfcccc;
+}
+
+
+.add-epic-button {
+    border: none;
+    background-color: white;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.add-epic-button:hover {
+    background-color: #cfcccc;
+}
+
+
+
+.droppable-feature {
+    min-width: 300px;
+    background-color: #f4f5f7;
+    padding: 8px;
+    border-radius: 6px;
+
+    color: #44536f;
+}
+
+
+.delete-button {
+    background-color: transparent !important;
+    color: #44536f;
+}
+
+.delete-button:hover svg {
+    color: red;
+}

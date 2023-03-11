@@ -1,4 +1,4 @@
-import { createProject } from "./_requests";
+import { createEpic, createFeature, createProject, deleteEpic, deleteFeature } from "./_requests";
 import { BarryEventPublisher } from './BarryEventListner';
 
 export interface BarryObject {
@@ -94,6 +94,21 @@ export class BarryObjectStore {
             stored.merge(props);
             return (stored as any) as T;
         }
+    }
+
+    public decodeArray<T extends new (...a: any[])=> any>(TCreator: T, props: any): Array<T> {
+        return ((): Array<T> => {
+            if(!props || props === null || props === undefined || typeof props === 'undefined'){
+                return [];
+            } else if(Array.isArray(props)){
+                return props.map(function(value: any): T {
+                    return (BarryObjectStore.Instance.decode(TCreator, value) ?? (new TCreator(value))) as any;
+                })
+            } else {
+                const decoded = BarryObjectStore.Instance.decode(TCreator, props) as any;
+                return decoded !== undefined ? [decoded!] : [];
+            }
+        })();
     }
 
     // ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null 
@@ -403,6 +418,20 @@ export interface CreateProjectParameters {
     endDate?: Date|undefined
 }
 
+export interface CreateFeatureParameters {
+    name: string,
+    description?: string|undefined
+}
+
+export interface CreateEpicParameters {
+    name: string,
+    description?: string|undefined,
+    duration: number,
+
+    startDate?: Date|undefined,
+    startAfterId?: number|undefined
+}
+
 
 
 export interface ClientProps extends UserProps {
@@ -479,10 +508,14 @@ export interface EpicProps extends ProjectItemProps {
 
 export class Epic extends ProjectItem {
     feature: Feature|undefined
+    private _featureId: number|undefined = undefined;
 
     public constructor(props: EpicProps){
         super(props);
-        this.feature = props.feature;
+
+        const ftr: any|undefined = props.feature ? BarryObjectStore.Instance.decode(Feature, props.feature!) : undefined;
+        this.feature = ftr ?? BarryObjectStore.Instance.get('feature', (props as any).featureId);
+        this._featureId = this.feature?.id ?? (props as any).featureId;
     }
 
     get getObjectType(): string|undefined {
@@ -491,6 +524,11 @@ export class Epic extends ProjectItem {
 
     merge(props: any): void {
         // Merge new object here.
+    }
+
+    setFeature(feature: Feature|undefined){
+        this.feature = feature;
+        this._featureId = feature?.id;
     }
 }
 
@@ -506,11 +544,16 @@ export interface FeatureProps extends ProjectItemProps {
 export class Feature extends ProjectItem {
     project: Project|undefined
     epics: Array<Epic>
+    private _projectId: number|undefined = undefined;
     
     public constructor(props: FeatureProps){
         super(props);
-        this.project = props.project;
-        this.epics = props.epics ?? (new Array<Epic>());
+        
+        this.epics = BarryObjectStore.Instance.decodeArray(Epic, props.epics) as any;
+
+        const prgct: any|undefined = props.project ? BarryObjectStore.Instance.decode(Project, props.project!) : undefined;
+        this.project = prgct ?? BarryObjectStore.Instance.get('project', (props as any).projectId);
+        this._projectId = this.project?.id ?? (props as any)?.projectId;
     }
 
     get getObjectType(): string|undefined {
@@ -519,6 +562,80 @@ export class Feature extends ProjectItem {
 
     merge(props: any): void {
         // Merge new object here.
+    }
+
+    setProject(project: Project|undefined){
+        this.project = project;
+        this._projectId = project?.id;
+    }
+
+    public addEpic(epic: Epic): void {
+        if(epic.feature !== this){
+            // Feature already belongs to another project, remove it from other project.
+            epic?.feature?.removeEpic(epic);
+        }
+
+        epic.setFeature(this);
+        this.epics.push(epic);
+        
+        this.publisher.fire('valueChange', this, {
+            oldValue: undefined,
+            newValue: this.epics,
+            name: 'epics',
+            arrayEvent: {
+                item: epic,
+                index: this.epics.length,
+                count: 1,
+                multiplier: 1,
+                type: 'insert'
+            }
+        })
+    }
+
+    public removeEpic(epic: Epic): void {
+        if(!epic) return;
+
+        const i = this.epics.indexOf(epic);
+        if(i >= 0 && i <= this.epics.length){
+            this.epics.splice(i, 1);
+            epic?.setFeature(undefined);
+
+            this.publisher.fire('valueChange', this, {
+                oldValue: undefined,
+                newValue: this.epics,
+                name: 'epics',
+                arrayEvent: {
+                    item: epic,
+                    index: i,
+                    count: 1,
+                    multiplier: -1,
+                    type: 'delete'
+                }
+            })
+
+        } else if(epic.feature === this){
+            epic?.setFeature(undefined);
+        }
+    }
+
+    create(epic: CreateEpicParameters, manager: Manager){
+        return createEpic({...epic, ...{creatorId: manager.id, featureId: this.id}}).then(epics => {
+            epics.data.forEach((ep: any)=>{
+                this.addEpic(ep);
+            })
+            return epics;
+        })
+    }
+
+    delete(epic: Epic){
+        return deleteEpic({epicId: epic.id.toString()}).then((response)=> {
+            console.log('response-project:', response);
+            if(response  && (response.data === true || response.data.data === true)){
+                // Deletion success.
+                this.removeEpic(epic);
+            }
+            
+        })
     }
 }
 
@@ -533,6 +650,7 @@ export type ProjectProps = {
     name: string|undefined;
     description?: string|undefined
     createDate?: Date;
+    features?: Array<Feature>|undefined;
 
     manager?: Manager;
     client?: Client;
@@ -545,6 +663,7 @@ export class Project implements BarryObject {
     name: string|undefined
     description: string|undefined
     createDate: Date|undefined
+    features: Array<Feature> = [];
 
     manager: Manager|undefined;
     client: Client|undefined;
@@ -552,19 +671,21 @@ export class Project implements BarryObject {
     publisher: BarryEventPublisher;
   
     constructor(props: ProjectProps) {
-      this.id = props.id;
-      this.name = props.name;
-      this.createDate = props.createDate && typeof props.createDate === 'string' ? (new Date(props.createDate!)) : props.createDate;
-      this.description = props.description;
-      this.publisher = new BarryEventPublisher();
+        this.id = props.id;
+        this.name = props.name;
+        this.createDate = props.createDate && typeof props.createDate === 'string' ? (new Date(props.createDate!)) : props.createDate;
+        this.description = props.description;
+        this.publisher = new BarryEventPublisher();
 
-      const mngr: any|undefined = props.manager ? BarryObjectStore.Instance.decode(Manager, props.manager!) : undefined;
-      this.manager = mngr;
-      this._managerId = this.manager?.id || props.managerId;
+        const mngr: any|undefined = props.manager ? BarryObjectStore.Instance.decode(Manager, props.manager!) : undefined;
+        this.manager = mngr;
+        this._managerId = this.manager?.id || props.managerId;
 
-      const clnt: any|undefined = props.client ? BarryObjectStore.Instance.decode(Client, props.client!) : undefined;
-      this.client = clnt;
-      this._clientId = this.client?.id || props.clientId;
+        const clnt: any|undefined = props.client ? BarryObjectStore.Instance.decode(Client, props.client!) : undefined;
+        this.client = clnt;
+        this._clientId = this.client?.id || props.clientId;
+
+        this.features = BarryObjectStore.Instance.decodeArray(Feature, props.features) as any;
     }
 
     get getObjectType(): string|undefined {
@@ -586,6 +707,75 @@ export class Project implements BarryObject {
 
     get clientId(): number|undefined {
         return this._clientId ?? this.client?.id;
+    }
+
+    public addFeature(feature: Feature): void {
+        if(feature.project !== this){
+            // Feature already belongs to another project, remove it from other project.
+            feature?.project?.removeFeature(feature);
+        }
+
+        feature.setProject(this);
+        this.features.push(feature);
+        
+        this.publisher.fire('valueChange', this, {
+            oldValue: undefined,
+            newValue: this.features,
+            name: 'features',
+            arrayEvent: {
+                item: feature,
+                index: this.features.length,
+                count: 1,
+                multiplier: 1,
+                type: 'insert'
+            }
+        })
+    }
+
+    public removeFeature(feature: Feature): void {
+        if(!feature) return;
+
+        const i = this.features.indexOf(feature);
+        if(i >= 0 && i <= this.features.length){
+            this.features.splice(i, 1);
+            feature?.setProject(undefined);
+
+            this.publisher.fire('valueChange', this, {
+                oldValue: undefined,
+                newValue: this.features,
+                name: 'features',
+                arrayEvent: {
+                    item: feature,
+                    index: i,
+                    count: 1,
+                    multiplier: -1,
+                    type: 'delete'
+                }
+            })
+
+        } else if(feature.project === this){
+            feature?.setProject(undefined);
+        }
+    }
+
+    create(feature: CreateFeatureParameters, manager: Manager){
+        return createFeature({...feature, ...{creatorId: manager.id, projectId: this.id}}).then(features => {
+            features.data.forEach((fr: any)=>{
+                this.addFeature(fr);
+            })
+            return features;
+        })
+    }
+
+    delete(feature: Feature){
+        return deleteFeature({featureId: feature.id.toString()}).then((response)=> {
+            console.log('response-project:', response);
+            if(response  && (response.data === true || response.data.data === true)){
+                // Deletion success.
+                this.removeFeature(feature);
+            }
+            
+        })
     }
 
     toFormdata(): FormData {
