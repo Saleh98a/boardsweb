@@ -5,7 +5,7 @@ import { useBarry } from "../BarryContext";
 import '../app.css'
 
 import styled from '@emotion/styled'
-import { DragDropContext, Droppable, Draggable, DropResult, OnDragEndResponder } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable, DropResult, OnDragEndResponder, ResponderProvided } from 'react-beautiful-dnd';
 import { BarryObjectStore, Epic, Feature, Manager } from "../models/_types";
 import { Button, Form, Modal } from "react-bootstrap-v5";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -48,14 +48,63 @@ const ProjectBoard: FC<ProjectBoardProps> = ({features, rerender, addFeatureColu
   function onCreateEpicClick(){
   }
 
+  function getFeatureOfId(featureId: number|string|undefined, feature?: Feature|undefined): Feature|undefined {
+    if(featureId === undefined || featureId === null || typeof featureId !== 'number' || isNaN(featureId)){
+      if(typeof featureId === 'string' && parseInt(featureId) && !isNaN(parseInt(featureId)))
+        return getFeatureOfId(parseInt(featureId), feature);
+      return undefined;
+    } else if(featureId < 0)
+      return undefined;
+    else if(feature && feature.id === featureId)
+      return feature;
+
+    for (let i = 0; i < (state.features?.length ?? 0); i++) 
+      if(state.features![i] && state.features![i].id === featureId)
+        return state.features![i];
+
+    return undefined;
+  }
+
+  function onEpicDragEnd(result: DropResult, provided: ResponderProvided){
+    console.log('dragdrop::result:', result, 'provided:', provided);
+    onDragEnd && onDragEnd(result, provided);
+
+    if(result && result.source && result.destination){
+      const sourceDroppableId = result.source.droppableId.split('-').pop();
+      const destinationDroppableId = result.destination.droppableId.split('-').pop();
+
+      const sFeature = getFeatureOfId(sourceDroppableId);
+      const dFeature = getFeatureOfId(destinationDroppableId, sFeature);
+
+      if(!sFeature || !dFeature)
+        return; // Invalid Action.
+
+      const sIndex = result.source.index;
+      const dIndex = result.destination.index;
+      if(sFeature === dFeature){
+        if(sIndex === dIndex)
+          return; // Returned to same position.
+        
+        sFeature.moveEpic(sIndex, dIndex);
+      } else {
+        const epic = sFeature.getEpicAt(sIndex);
+        if(!epic)
+          return; // There's no such epic to move.
+
+        sFeature.removeEpic(epic);
+        dFeature.addEpic(epic, dIndex);
+      }
+    }
+  }
+
   return (
     <div className="container-fluid px-0 mx-0 h-100 overflow-scroll">
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onEpicDragEnd}>
         <div className="full-width-child row d-flex flex-nowrap h-100 mb-8">
           {
             (state.features ?? []).map((feature, index) => {
               return(
-                <div className="col-auto"key={index}>
+                <div className="col-auto" key={index}>
                   {<DroppableFeature feature={feature} index={index} deleteFeature={deleteFeature} createEpicHandler={onCreateEpicClick} />}
                 </div>
               )

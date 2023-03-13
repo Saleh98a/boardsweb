@@ -574,14 +574,20 @@ export class Feature extends ProjectItem {
         this._projectId = project?.id;
     }
 
-    public addEpic(epic: Epic): void {
+    public addEpic(epic: Epic, index?: number|undefined): void {
         if(epic.feature !== this){
             // Feature already belongs to another project, remove it from other project.
             epic?.feature?.removeEpic(epic);
         }
 
         epic.setFeature(this);
-        this.epics.push(epic);
+        let i = index;
+        if(typeof index === 'number' && index >= 0 && index < this.epics.length){
+            this.epics.splice(index, 0, epic);
+        } else {
+            this.epics.push(epic);
+            i = this.epics.length;
+        }
         
         this.publisher.fire('valueChange', this, {
             oldValue: undefined,
@@ -589,7 +595,7 @@ export class Feature extends ProjectItem {
             name: 'epics',
             arrayEvent: {
                 item: epic,
-                index: this.epics.length,
+                index: i,
                 count: 1,
                 multiplier: 1,
                 type: 'insert'
@@ -621,6 +627,42 @@ export class Feature extends ProjectItem {
         } else if(epic.feature === this){
             epic?.setFeature(undefined);
         }
+    }
+
+    public moveEpic(source: number, destination: number): boolean {
+        if(source < 0 || source >= this.epics.length || destination < 0 || destination >= this.epics.length)
+            return false; // Invalid action.
+        else if(source === destination)
+            return true; // Same position.
+        
+        const move = this.epics.splice(source, 1);
+        this.epics.splice(destination, 0, ...move);
+
+        this.publisher.fire('valueChange', this, {
+            oldValue: undefined,
+            newValue: this.epics,
+            name: 'epics',
+            arrayEvent: {
+                item: move,
+                index: source,
+                destination: destination,
+                count: move.length,
+                multiplier: 0,
+                type: 'move'
+            }
+        })
+        return true;
+    }
+
+    public getEpicAt(i: number): Epic|undefined {
+        return i >= 0 && i < this.epics.length ? this.epics[i] : undefined;
+    }
+
+    public getEpicOfId(id: number): Epic|undefined {
+        for (let i = 0; i < this.epics.length; i++)
+            if(this.epics[i] && this.epics[i].id === id)
+                return this.epics[i];
+        return undefined;
     }
 
     create(epic: CreateEpicParameters, manager: Manager){

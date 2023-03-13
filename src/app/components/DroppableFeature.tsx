@@ -163,13 +163,6 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({feature, index, deleteFeat
     function onCreateEpicClick(){
         createEpicHandler && createEpicHandler(feature, index);
         setCreateEpicVisible(true);
-        // if(feature && feature instanceof Feature && currentUser && (currentUser instanceof Manager)){
-        //     feature.create({
-        //         name: 'Unnamed Epic',
-        //         description: 'Blank',
-        //         duration: 120
-        //     }, currentUser);
-        // }
     }
 
     function createEpicSubmit(epic: EpicSubmitProps){
