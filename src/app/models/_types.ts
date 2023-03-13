@@ -506,11 +506,13 @@ export abstract class ProjectItem implements BarryObject {
 export interface EpicProps extends ProjectItemProps {
     feature?: Feature
     startDate?: Date|undefined
+    duration?: number|undefined
 }
 
 export class Epic extends ProjectItem {
     feature: Feature|undefined
     startDate: Date|undefined
+    duration: number;
     private _featureId: number|undefined = undefined;
 
     public constructor(props: EpicProps){
@@ -520,7 +522,8 @@ export class Epic extends ProjectItem {
         this.feature = ftr ?? BarryObjectStore.Instance.get('feature', (props as any).featureId);
         this._featureId = this.feature?.id ?? (props as any).featureId;
 
-        this.startDate = stringToDate(undefined);
+        this.startDate = stringToDate(props.startDate);
+        this.duration = typeof props.duration !== 'undefined' ? parseInt(props.duration.toString()) : 0;
     }
 
     get getObjectType(): string|undefined {

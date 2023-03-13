@@ -35,10 +35,10 @@ const DraggableEpicContent: FC<DraggableEpicContentProps> = ({epic, index, delet
     return (
         <div className="draggable-epic-content container-fluid p-0">
             <div className="row justify-content-between g-0">
-                <div className="col-auto d-flex align-items-center">
+                <div className="col-auto p-0 d-flex align-items-center">
                     <span className="fw-bolder">{epic.name}</span>
                 </div>
-                <div className="col-auto">
+                <div className="col-auto p-0">
                 <Dropdown>
                     <Dropdown.Toggle className="options-button py-0 p-2" variant="none" size="sm" id="dropdown-basic">
                         <FontAwesomeIcon icon={faEllipsisVertical}/>
@@ -49,16 +49,32 @@ const DraggableEpicContent: FC<DraggableEpicContentProps> = ({epic, index, delet
                     </Dropdown>
                 </div>
             </div>
-            <div className="row">
-                <p className="text-muted">
-                    { epic.description && epic.description.trim().length > 0 && (epic.description) }
-                </p>
+            {
+                epic.description && epic.description.trim().length > 0 && <div className="row text-muted g-0">{epic.description}</div>
+            }
+            <div className="row g-0 mt-2">
+                <table>
+                    <thead/>
+                    <tbody>
+                        {
+                        epic.startDate ? <tr>
+                            <td>Starting At:</td>
+                            <td><Moment className="fw-bolder" format="YYYY/MM/DD HH:mm" local={true} date={epic.startDate} style={{width: 'fit-content'}} /></td>
+                        </tr> : <tr>
+                            <td className="text-muted" style={{textDecoration: 'line-through'}}>No start date assigned</td>
+                        </tr>
+                        }
+                        {
+                        epic.duration > 0 ? <tr>
+                            <td>Duration:</td>
+                            <td className="fw-bolder">{epic.duration}.h</td>
+                        </tr> : <tr>
+                            <td className="text-muted" style={{textDecoration: 'line-through'}}>No duration assigned</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-            { epic.startDate && <div className="row">
-                <p className="text-muted">
-                    <Moment>{ epic.startDate }</Moment>
-                </p>
-            </div>}
         </div>
     );
 }
@@ -72,7 +88,7 @@ function DraggableEpic({ epic, index, deleteHandler }: DraggableEpicProps) {
         <Draggable draggableId={`${epic.id}`} index={index}>
         {provided => (
             <QuoteItem
-            className="draggable-epic-container"
+            className="draggable-epic-container p-4"
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
