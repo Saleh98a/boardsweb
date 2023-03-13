@@ -31,7 +31,7 @@ const CreateEpicModal: FC<CreateEpicModalProps> = ({isVisible, onVisibility, onS
       if('reportValidity' in formRef.current){
         const isValid = (formRef.current as any).reportValidity() === true;
         if(isValid){
-          onSubmit && onSubmit({name: name ?? 'Unnamed Epic', description: description, startDate: startDate, duration: duration});
+          onSubmit && onSubmit({name: name ?? 'Unnamed Epic', description: description, startDate: ((startDate?.toISOString() ?? undefined) as any), duration: duration});
           handleClose();
         } else {
           alert('Invalid parameters!');

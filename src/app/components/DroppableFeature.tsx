@@ -205,7 +205,7 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({feature, index, deleteFeat
 
         <Droppable droppableId={`list-${feature.id}`}>
             {provided => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
+            <div ref={provided.innerRef} {...provided.droppableProps} style={epics.length == 0 ? {minHeight: '8px'} : undefined}>
                 <DraggableEpicList epics={epics} rerenderer={epicsRender} deleteHandler={onDeleteEpic} />
                 {provided.placeholder}
             </div>

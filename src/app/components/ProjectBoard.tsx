@@ -66,7 +66,6 @@ const ProjectBoard: FC<ProjectBoardProps> = ({features, rerender, addFeatureColu
   }
 
   function onEpicDragEnd(result: DropResult, provided: ResponderProvided){
-    console.log('dragdrop::result:', result, 'provided:', provided);
     onDragEnd && onDragEnd(result, provided);
 
     if(result && result.source && result.destination){
