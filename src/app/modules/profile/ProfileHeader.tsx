@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
-import {KTSVG, toAbsoluteUrl} from '../../../_metronic/helpers'
-import {Link} from 'react-router-dom'
-import {Dropdown1} from '../../../_metronic/partials'
-import {useLocation} from 'react-router-dom'
+import { KTSVG, toAbsoluteUrl } from '../../../_metronic/helpers'
+import { Link } from 'react-router-dom'
+import { Dropdown1 } from '../../../_metronic/partials'
+import { useLocation } from 'react-router-dom'
 import { useBarry } from '../../BarryContext'
 import { Employee } from '../../models/_types'
 
 const ProfileHeader: React.FC = () => {
-  const {currentUser} = useBarry();
+  const { currentUser } = useBarry();
   const location = useLocation()
 
   return (
@@ -17,7 +17,7 @@ const ProfileHeader: React.FC = () => {
         <div className='d-flex flex-wrap flex-sm-nowrap mb-3'>
           <div className='me-7 mb-4'>
             <div className='symbol symbol-100px symbol-lg-160px symbol-fixed position-relative'>
-              <img src={toAbsoluteUrl('/media/avatars/150-2.jpg')} alt='Metornic' />
+              <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='Metornic' />
               <div className='position-absolute translate-middle bottom-0 start-100 mb-6 bg-success rounded-circle border border-4 border-white h-20px w-20px'></div>
             </div>
           </div>
@@ -228,4 +228,4 @@ const ProfileHeader: React.FC = () => {
   )
 }
 
-export {ProfileHeader}
+export { ProfileHeader }

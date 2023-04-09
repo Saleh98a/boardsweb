@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {useState} from 'react'
-import {useDispatch} from 'react-redux'
-import {useFormik} from 'formik'
+import React, { ChangeEvent, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import clsx from 'clsx'
 import * as auth from '../redux/AuthRedux'
-import {register} from '../redux/AuthCRUD'
-import {Link} from 'react-router-dom'
-import {toAbsoluteUrl} from '../../../../_metronic/helpers'
+import { register } from '../redux/AuthCRUD'
+import { Link } from 'react-router-dom'
+import { toAbsoluteUrl } from '../../../../_metronic/helpers'
 
 const initialValues = {
   firstname: '',
@@ -16,6 +16,7 @@ const initialValues = {
   password: '',
   changepassword: '',
   acceptTerms: false,
+  accountType: 'Employee',
 }
 
 const registrationSchema = Yup.object().shape({
@@ -51,13 +52,13 @@ export function Registration() {
   const formik = useFormik({
     initialValues,
     validationSchema: registrationSchema,
-    onSubmit: (values, {setStatus, setSubmitting}) => {
+    onSubmit: (values, { setStatus, setSubmitting }) => {
       setLoading(true)
       setTimeout(() => {
-        register(values.email, values.firstname, values.lastname, values.password)
-          .then(({data: {email, password}}) => {
+        register(values.email, values.firstname, values.lastname, values.password, values.accountType)
+          .then(() => {
             setLoading(false)
-            dispatch(auth.actions.login('', email, password))
+            dispatch(auth.actions.login('', values.email, values.password))
           })
           .catch(() => {
             setLoading(false)
@@ -67,6 +68,10 @@ export function Registration() {
       }, 1000)
     },
   })
+
+  function onAccountTypeChange(event: any): void {
+    formik.values.accountType = event.target.value;
+  }
 
   return (
     <form
@@ -84,7 +89,7 @@ export function Registration() {
         {/* begin::Link */}
         <div className='text-gray-400 fw-bold fs-4'>
           Already have an account?
-          <Link to='/auth/login' className='link-primary fw-bolder' style={{marginLeft: '5px'}}>
+          <Link to='/auth/login' className='link-primary fw-bolder' style={{ marginLeft: '5px' }}>
             Forgot Password ?
           </Link>
         </div>
@@ -184,7 +189,7 @@ export function Registration() {
           {...formik.getFieldProps('email')}
           className={clsx(
             'form-control form-control-lg form-control-solid',
-            {'is-invalid': formik.touched.email && formik.errors.email},
+            { 'is-invalid': formik.touched.email && formik.errors.email },
             {
               'is-valid': formik.touched.email && !formik.errors.email,
             }
@@ -262,6 +267,29 @@ export function Registration() {
 
       {/* begin::Form group */}
       <div className='fv-row mb-10'>
+        <div className="form-check form-check-inline">
+          <input
+            className="form-check-input" type="radio" name="accountType" id="flexRadioDefault1" value="Employee"
+            onClick={onAccountTypeChange}
+            checked />
+          <label className="form-check-label" htmlFor="flexRadioDefault1">
+            Employee
+          </label>
+        </div>
+        <div className="form-check form-check-inline">
+          <input
+            className="form-check-input" type="radio" name="accountType" id="flexRadioDefault2" value="Manager"
+            onClick={onAccountTypeChange}
+          />
+          <label className="form-check-label" htmlFor="flexRadioDefault2">
+            Manager
+          </label>
+        </div>
+      </div>
+      {/* end::Form group */}
+
+      {/* begin::Form group */}
+      <div className='fv-row mb-10'>
         <div className='form-check form-check-custom form-check-solid'>
           <input
             className='form-check-input'
@@ -273,7 +301,7 @@ export function Registration() {
             className='form-check-label fw-bold text-gray-700 fs-6'
             htmlFor='kt_login_toc_agree'
           >
-            I Agree the{' '}
+            I Agree the{' '} {formik.values.accountType}
             <Link to='/auth/terms' className='ms-1 link-primary'>
               terms and conditions
             </Link>
@@ -300,7 +328,7 @@ export function Registration() {
         >
           {!loading && <span className='indicator-label'>Submit</span>}
           {loading && (
-            <span className='indicator-progress' style={{display: 'block'}}>
+            <span className='indicator-progress' style={{ display: 'block' }}>
               Please wait...{' '}
               <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
             </span>

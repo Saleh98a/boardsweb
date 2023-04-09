@@ -17,17 +17,16 @@ export const DELETE_EPIC_URL = `${API_URL}/epics/`
 
 export type CreateProjectParameters = {
     name: string,
-    description?: string|undefined,
-    clientId?: number|undefined
-    startDate?: Date|undefined
-    endDate?: Date|undefined
+    description?: string | undefined,
+    startDate?: Date | undefined
+    endDate?: Date | undefined
 }
 
 export function createProject(parmeters: CreateProjectParameters) {
-    return axios.post(CREATE_PROJECT_URL, null ,{
+    return axios.post(CREATE_PROJECT_URL, null, {
         params: parmeters
     }).then((response) => {
-        if(response && response.data){
+        if (response && response.data) {
             console.log('response:', response);
             const resp = new BarryResponse(Project, response.data);
             response.data = resp.data;
@@ -43,16 +42,16 @@ export function createProject(parmeters: CreateProjectParameters) {
 
 export type CreateFeatureParameters = {
     name: string,
-    description?: string|undefined,
+    description?: string | undefined,
     projectId: number
     creatorId: number
 }
 
 export function createFeature(parmeters: CreateFeatureParameters) {
-    return axios.post(CREATE_FEATURE_URL, null ,{
+    return axios.post(CREATE_FEATURE_URL, null, {
         params: parmeters
     }).then((response) => {
-        if(response && response.data){
+        if (response && response.data) {
             console.log('response:', response);
             const resp = new BarryResponse(Feature, response.data);
             response.data = resp.data;
@@ -68,7 +67,7 @@ export type DeleteFeatureParameters = {
 }
 
 export function deleteFeature(parmeters: DeleteFeatureParameters) {
-    return axios.delete(DELETE_FEATURE_URL+`${parmeters.featureId}/`).then((response) => {
+    return axios.delete(DELETE_FEATURE_URL + `${parmeters.featureId}/`).then((response) => {
         toBarryResponse(response);
         console.log('response:', response);
         return response;
@@ -84,15 +83,15 @@ export type CreateEpicParameters = {
     creatorId: number,
 
     name: string,
-    description?: string|undefined,
+    description?: string | undefined,
     duration: number,
 
-    startDate?: Date|undefined,
-    startAfterId?: number|undefined
+    startDate?: Date | undefined,
+    startAfterId?: number | undefined
 }
 
 export function createEpic(parmeters: CreateEpicParameters) {
-    return axios.post(CREATE_EPIC_URL, null ,{
+    return axios.post(CREATE_EPIC_URL, null, {
         params: parmeters
     }).then((response) => {
         toBarryResponse(response, Epic);
@@ -107,7 +106,7 @@ export type DeleteEpicParameters = {
 }
 
 export function deleteEpic(parmeters: DeleteEpicParameters) {
-    return axios.delete(DELETE_EPIC_URL+`${parmeters.epicId}/`).then((response) => {
+    return axios.delete(DELETE_EPIC_URL + `${parmeters.epicId}/`).then((response) => {
         toBarryResponse(response);
         console.log('response:', response);
         return response;
@@ -118,11 +117,11 @@ export function deleteEpic(parmeters: DeleteEpicParameters) {
 
 
 
-function toBarryResponse<T extends new (...a: any[])=> any>(response: AxiosResponse<any>, TCreator?: T|undefined): AxiosResponse<T> {
-    if(!response || response === undefined || response === null)
+function toBarryResponse<T extends new (...a: any[]) => any>(response: AxiosResponse<any>, TCreator?: T | undefined): AxiosResponse<T> {
+    if (!response || response === undefined || response === null)
         return response;
 
-    if(response.data && TCreator){
+    if (response.data && TCreator) {
         const resp = new BarryResponse(TCreator, response.data);
         response.data = resp.data;
     }
