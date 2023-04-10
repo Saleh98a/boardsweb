@@ -1,6 +1,6 @@
 
 import '../app/models/_types';
-import { User, Employee, Project, Manager, PersonRole, BarryResponse, Epic, Feature } from '../app/models/_types';
+import { User, Employee, Project, Manager, PersonRole, BarryResponse, Epic, Feature, Assignment } from '../app/models/_types';
 import { createContext, FC, PropsWithChildren } from 'react';
 
 
@@ -11,6 +11,10 @@ type ProjectFilter = {
 
 type AssignmentFilter = {
     employeeId?: number
+}
+
+type EmployeeFilter = {
+
 }
 
 const BarryAPI = (function () {
@@ -85,7 +89,7 @@ const BarryAPI = (function () {
                         console.log(err);
                         callback(null, err);
                     });
-            }
+            },
         },
 
         features: {
@@ -183,7 +187,57 @@ const BarryAPI = (function () {
                         console.log(err);
                         callback(null, err);
                     });
+            },
+
+            assign: function (epic: Epic, employee: Employee, callback: (result: Assignment | null, error: Error | null) => void) {
+                if (!epic || epic == null)
+                    return callback(null, new Error('Missing epic object'));
+
+                fetch('http://localhost:8080/epics/' + epic.id + '/assign/' + employee.accountId, { method: 'POST' })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log('data:', data);
+                        if (data == null || !data['data'] || data['data'] == null)
+                            return callback(null, new Error('Request returned with no epic object'));
+
+                        console.log(data);
+                        callback(data['data'], null);
+                    }).catch((err) => {
+                        console.log(err);
+                        callback(null, err);
+                    });
             }
+        },
+
+        employees: {
+            get: function (filter: EmployeeFilter = {}, callback: (employees: Array<Employee>, error: Error | null) => void) {
+                var params: { [key: string]: any; } = {};
+                var keys = Object.keys(filter);
+                var values = Object.values(filter);
+                for (let index = 0; index < keys.length; index++) {
+                    if (values[index] !== undefined && values[index] != null)
+                        params[keys[index]] = values[index];
+                }
+
+                let url = 'http://localhost:8080/employees/';
+                console.log('url', url);
+                fetch(url + '?' + new URLSearchParams(params))
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        const resp = new BarryResponse(Employee, data);
+                        console.log('response:', resp);
+                        if (Array.isArray(data['data'])) {
+                            callback(data['data'], null);
+                        } else {
+                            callback([data['data']], null);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err.message);
+                        callback(new Array<Employee>(), err);
+                    });
+            },
         },
 
     }
@@ -200,7 +254,7 @@ const BarryApp = (function () {
         currentUser: function (): User {
             // All private members are accessible here
             return new Manager({
-                id: 2,
+                accountId: 2,
                 name: 'Frodo Baggins',
                 email: 'manager@panel.com',
                 role: PersonRole.Manager,

@@ -11,6 +11,7 @@ import { BarryEventListner } from "../models/BarryEventListner";
 import { useBarry } from "../BarryContext";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
 import { CreateEpicModal, EpicSubmitProps } from "./CreateEpicModal";
+import { AssignEpicModal, AssignEpicProps } from "./AssignEpicModal";
 
 import Moment from 'react-moment';
 import 'moment-timezone';
@@ -23,12 +24,28 @@ const QuoteItem = styled.div``;
 
 type DraggableEpicContentProps = React.PropsWithChildren<{
     epic: Epic
+    rerenderer: number | undefined
     index: number
     currentUser: User
     deleteHandler?: ((epic: Epic, index: number) => void) | undefined
+    onAssignEpicClick?: ((epic: Epic) => void) | undefined
 }>;
 
-const DraggableEpicContent: FC<DraggableEpicContentProps> = ({ epic, currentUser, index, deleteHandler }) => {
+const DraggableEpicContent: FC<DraggableEpicContentProps> = ({ epic, rerenderer, currentUser, index, deleteHandler, onAssignEpicClick }) => {
+
+    const [epicsRender, setEpicsRender] = useState<number | undefined>(rerenderer);
+    const [epicState, setEpicState] = useState<Epic>(epic);
+
+    useEffect(() => {
+        console.log('epic::list::epics:', epic, 'state:', epic);
+        if (epic !== epicState) {
+            setEpicState(epic);
+            if (rerenderer !== epicsRender)
+                setEpicsRender(rerenderer);
+        } else if (rerenderer !== epicsRender)
+            setEpicsRender(rerenderer);
+
+    }, [epic])
 
     function onDeleteClickHandler() {
         deleteHandler && deleteHandler(epic, index);
@@ -51,7 +68,7 @@ const DraggableEpicContent: FC<DraggableEpicContentProps> = ({ epic, currentUser
         <div className="draggable-epic-content container-fluid p-0">
             <div className="row justify-content-between g-0">
                 <div className="col-auto p-0 d-flex align-items-center">
-                    <span className="fw-bolder" contentEditable
+                    <span className="fw-bolder single-line" contentEditable
                         onBlur={epicNameChanged}
                         onKeyPress={(e) => { if (e.key === 'Enter') epicNameChanged(e) }}>{epic.name}</span>
                 </div>
@@ -92,6 +109,8 @@ const DraggableEpicContent: FC<DraggableEpicContentProps> = ({ epic, currentUser
                     </tbody>
                 </table>
             </div>
+            {epic.assignment && <p className="assigned-to-label">Assigned to <strong>{epic.assignment?.employee?.firstName} {epic.assignment?.employee?.lastName}</strong></p>}
+            {!epic.assignment && <button className="assign-epic-button w-100 mt-4" onClick={() => onAssignEpicClick && onAssignEpicClick(epic)}>Assign Epic</button>}
         </div>
     );
 }
@@ -100,7 +119,7 @@ const DraggableEpicContent: FC<DraggableEpicContentProps> = ({ epic, currentUser
 type DraggableEpicProps = DraggableEpicContentProps & {
 }
 
-function DraggableEpic({ epic, currentUser, index, deleteHandler }: DraggableEpicProps) {
+function DraggableEpic({ epic, rerenderer, currentUser, index, deleteHandler, onAssignEpicClick }: DraggableEpicProps) {
     return (
         <Draggable draggableId={`${epic.id}`} index={index}>
             {provided => (
@@ -110,7 +129,7 @@ function DraggableEpic({ epic, currentUser, index, deleteHandler }: DraggableEpi
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                 >
-                    <DraggableEpicContent epic={epic} index={index} currentUser={currentUser} deleteHandler={deleteHandler} />
+                    <DraggableEpicContent epic={epic} rerenderer={rerenderer} index={index} currentUser={currentUser} deleteHandler={deleteHandler} onAssignEpicClick={onAssignEpicClick} />
                 </QuoteItem>
             )}
         </Draggable>
@@ -122,9 +141,10 @@ type DraggableEpicListProps = {
     currentUser: User
     rerenderer?: number | undefined
     deleteHandler?: ((epic: Epic, index: number) => void) | undefined
+    onAssignEpicClick?: ((epic: Epic) => void) | undefined
 }
 
-const DraggableEpicList: FC<DraggableEpicListProps> = ({ epics, currentUser, rerenderer, deleteHandler }) => {
+const DraggableEpicList: FC<DraggableEpicListProps> = ({ epics, currentUser, rerenderer, deleteHandler, onAssignEpicClick }) => {
     const [epicsRender, setEpicsRender] = useState<number | undefined>(rerenderer);
     const [epicsState, setEpicsState] = useState<Epic[]>(epics);
 
@@ -141,7 +161,7 @@ const DraggableEpicList: FC<DraggableEpicListProps> = ({ epics, currentUser, rer
 
     return (
         <>{epicsState.map((epic: Epic, index: number) => (
-            <DraggableEpic epic={epic} index={index} currentUser={currentUser} key={epic.id} deleteHandler={deleteHandler} />
+            <DraggableEpic epic={epic} rerenderer={rerenderer} index={index} currentUser={currentUser} key={epic.id} deleteHandler={deleteHandler} onAssignEpicClick={onAssignEpicClick} />
         ))}</>);
 };
 
@@ -159,6 +179,8 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({ feature, index, deleteFea
     const [epics, setEpics] = useState<Epic[]>(feature.epics);
     const [epicsRender, setEpicsRender] = useState<number>(0);
     const [isCreateEpicVisible, setCreateEpicVisible] = useState<boolean>(false);
+    const [isAssignEpicVisible, setAssignEpicVisible] = useState<boolean>(false);
+    const [epicToBeAssigned, setEpicToBeAssigned] = useState<Epic | undefined>(undefined);
 
     useEffect(() => {
         registerToFeature(feature);
@@ -194,6 +216,11 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({ feature, index, deleteFea
         deleteFeature && deleteFeature(feature, index);
     }
 
+    function onAssignEpicClick(epic: Epic): void {
+        setAssignEpicVisible(true);
+        setEpicToBeAssigned(epic);
+    }
+
     function onCreateEpicClick() {
         createEpicHandler && createEpicHandler(feature, index);
         setCreateEpicVisible(true);
@@ -205,6 +232,15 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({ feature, index, deleteFea
 
         if (currentUser && (currentUser instanceof Manager))
             feature.create(epic, currentUser);
+    }
+
+    function assignEpicSubmit(assignProps: AssignEpicProps) {
+        if (!assignProps || !assignProps.epic || !assignProps.selectedEmployee)
+            return;
+
+        assignProps.epic.assignment = assignProps.assignment;
+        epics.find(e => e.id == assignProps.epic!.id)!.assignment = assignProps.assignment;
+        setEpicsRender(Math.random() * 100000);
     }
 
 
@@ -255,7 +291,7 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({ feature, index, deleteFea
             <Droppable droppableId={`list-${feature.id}`}>
                 {provided => (
                     <div ref={provided.innerRef} {...provided.droppableProps} style={epics.length == 0 ? { minHeight: '8px' } : undefined}>
-                        <DraggableEpicList epics={epics} rerenderer={epicsRender} currentUser={currentUser!} deleteHandler={onDeleteEpic} />
+                        <DraggableEpicList epics={epics} rerenderer={epicsRender} currentUser={currentUser!} deleteHandler={onDeleteEpic} onAssignEpicClick={onAssignEpicClick} />
                         {provided.placeholder}
                     </div>
                 )}
@@ -263,6 +299,7 @@ const DroppableFeature: FC<DroppableFeatureProps> = ({ feature, index, deleteFea
             <button className="add-epic-button w-100 mt-4" onClick={onCreateEpicClick}>Add Epic + </button>
 
             <CreateEpicModal isVisible={isCreateEpicVisible} onVisibility={(visible) => setCreateEpicVisible(visible)} onSubmit={createEpicSubmit} />
+            <AssignEpicModal epicToBeAssigned={epicToBeAssigned} isVisible={isAssignEpicVisible} onVisibility={(visible) => setAssignEpicVisible(visible)} onSubmit={assignEpicSubmit} />
         </div>
     );
 }

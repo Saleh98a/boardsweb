@@ -42,7 +42,21 @@
     background-color: #cfcccc;
 }
 
+.assign-epic-button {
+    border: none;
+    background-color: cfcccc;
+    padding: 8px;
+    border-radius: 6px;
+}
 
+.assign-epic-button:hover {
+    background-color: white;
+}
+
+.assigned-to-label {
+    margin-top: 8px;
+    margin-bottom: 0;
+}
 
 .droppable-feature {
     min-width: 300px;

@@ -240,7 +240,7 @@ export enum PersonRole {
 }
 
 export interface PersonProps {
-    id: number;
+    accountId: number;
     email: string;
     role?: PersonRole;
     name?: string;
@@ -250,7 +250,6 @@ export interface PersonProps {
 }
 
 export interface Person {
-    id: number;
     role: PersonRole;
     email: string;
     name: string | undefined;
@@ -266,6 +265,7 @@ export interface UserProps extends PersonProps {
 
 export class User implements Person, BarryObject {
     id: number;
+    accountId: number;
     role: PersonRole;
     email: string;
     name: string | undefined;
@@ -275,13 +275,8 @@ export class User implements Person, BarryObject {
     publisher: BarryEventPublisher;
 
     public constructor(props: UserProps) {
-        if (props.id && typeof props.id !== 'undefined') {
-            this.id = props.id;
-        } else if ((props as any).accountId && typeof (props as any).accountId !== 'undefined') {
-            this.id = (props as any).accountId;
-        } else {
-            this.id = props.id;
-        }
+        this.id = props.accountId;
+        this.accountId = props.accountId;
         this.role = props.role ?? PersonRole.Employee;
         this.email = props.email;
         this.firstName = props.firstName;
@@ -401,7 +396,7 @@ export class Employee extends User {
 export interface ManagerProps extends EmployeeProps {
 }
 
-export class Manager extends Employee implements ManagerProps {
+export class Manager extends Employee {
 
     public constructor(props: ManagerProps) {
         props.role = !props || props.role === undefined || typeof props.role === 'undefined' ? PersonRole.Manager : props.role;
@@ -519,20 +514,47 @@ export abstract class ProjectItem implements BarryObject {
     abstract merge(props: any): void;
 }
 
+export interface AssignmentProps {
+    id: number
+    createDate: Date
+    creator?: Person
+    employee?: Person
+    done?: boolean
+}
 
+export abstract class Assignment implements BarryObject {
+    id: number
+    createDate: Date
+    creator: Person | undefined
+    employee: Person | undefined
+    done: boolean | undefined
+    publisher: BarryEventPublisher;
 
+    public constructor(props: AssignmentProps) {
+        this.id = props.id;
+        this.createDate = stringToDate(props.createDate) ?? props.createDate;
+        this.creator = props.creator;
+        this.employee = props.employee;
+        this.done = props.done;
+        this.publisher = new BarryEventPublisher();
+    }
 
+    abstract get getObjectType(): string | undefined;
+    abstract merge(props: any): void;
+}
 
 export interface EpicProps extends ProjectItemProps {
     feature?: Feature
     startDate?: Date | undefined
     duration?: number | undefined
+    assignment?: Assignment | undefined
 }
 
 export class Epic extends ProjectItem {
     feature: Feature | undefined
     startDate: Date | undefined
     duration: number;
+    assignment: Assignment | undefined;
     private _featureId: number | undefined = undefined;
 
     public constructor(props: EpicProps) {
@@ -544,6 +566,8 @@ export class Epic extends ProjectItem {
 
         this.startDate = stringToDate(props.startDate);
         this.duration = typeof props.duration !== 'undefined' ? parseInt(props.duration.toString()) : 0;
+
+        this.assignment = props.assignment;
     }
 
     get getObjectType(): string | undefined {

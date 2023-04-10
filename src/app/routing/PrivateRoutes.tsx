@@ -1,8 +1,8 @@
-import React, {Suspense, lazy} from 'react'
-import {Redirect, Route, Switch} from 'react-router-dom'
-import {FallbackView} from '../../_metronic/partials'
-import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
-import {MenuTestPage} from '../pages/MenuTestPage'
+import React, { Suspense, lazy } from 'react'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import { FallbackView } from '../../_metronic/partials'
+import { DashboardWrapper } from '../pages/dashboard/DashboardWrapper'
+import { MenuTestPage } from '../pages/MenuTestPage'
 
 export function PrivateRoutes() {
   const BuilderPageWrapper = lazy(() => import('../pages/layout-builder/BuilderPageWrapper'))
@@ -31,5 +31,5 @@ export function PrivateRoutes() {
       </Switch>
     </Suspense>
   )
-  
+
 }
