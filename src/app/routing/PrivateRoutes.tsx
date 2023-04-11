@@ -10,7 +10,7 @@ export function PrivateRoutes() {
   const WizardsPage = lazy(() => import('../modules/wizards/WizardsPage'))
   const AccountPage = lazy(() => import('../modules/accounts/AccountPage'))
   const WidgetsPage = lazy(() => import('../modules/widgets/WidgetsPage'))
-  const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
+  const ChatPage = lazy(() => import('../modules/profile/AbsencesPage'))
   const ProjectPage = lazy(() => import('../pages/ProjectPage'))
 
   return (
@@ -19,6 +19,7 @@ export function PrivateRoutes() {
         <Route path='/dashboard' component={ProfilePage} />
         <Route path='/builder' component={BuilderPageWrapper} />
         <Route path='/crafted/pages/profile' component={ProfilePage} />
+        <Route path='/crafted/pages/absences' component={ChatPage} />
         <Route path='/crafted/pages/wizards' component={WizardsPage} />
         <Route path='/crafted/widgets' component={WidgetsPage} />
         <Route path='/crafted/account' component={AccountPage} />

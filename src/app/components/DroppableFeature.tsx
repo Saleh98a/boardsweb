@@ -64,6 +64,19 @@ const DraggableEpicContent: FC<DraggableEpicContentProps> = ({ epic, rerenderer,
         });
     }
 
+    function deleteAssignment(): void {
+        BarryAPI.assignments.delete(epic.assignment!, (result: boolean | null, error: Error | null) => {
+            if (!result) {
+                // Failed to delete 
+                alert('failed to unassign');
+            } else {
+                epic.assignment = undefined;
+                setEpicState(epic);
+                setEpicsRender(1000 * Math.random());
+            }
+        });
+    }
+
     return (
         <div className="draggable-epic-content container-fluid p-0">
             <div className="row justify-content-between g-0">
@@ -91,17 +104,17 @@ const DraggableEpicContent: FC<DraggableEpicContentProps> = ({ epic, rerenderer,
                     <thead />
                     <tbody>
                         {
-                            epic.startDate ? <tr>
+                            epic.assignment ? <tr>
                                 <td>Starting At:</td>
-                                <td><Moment className="fw-bolder" format="YYYY/MM/DD HH:mm" local={true} date={epic.startDate} style={{ width: 'fit-content' }} /></td>
+                                <td><Moment className="fw-bolder" format="YYYY/MM/DD" local={true} date={new Date(epic.assignment?.startDate)} style={{ width: 'fit-content' }} /></td>
                             </tr> : <tr>
                                 <td className="text-muted" style={{ textDecoration: 'line-through' }}>No start date assigned</td>
                             </tr>
                         }
                         {
-                            epic.duration > 0 ? <tr>
+                            epic.estimatedDuration && epic.estimatedDuration > 0 ? <tr>
                                 <td>Duration:</td>
-                                <td className="fw-bolder">{epic.duration}.h</td>
+                                <td className="fw-bolder">{epic.estimatedDuration}.h</td>
                             </tr> : <tr>
                                 <td className="text-muted" style={{ textDecoration: 'line-through' }}>No duration assigned</td>
                             </tr>
@@ -109,7 +122,7 @@ const DraggableEpicContent: FC<DraggableEpicContentProps> = ({ epic, rerenderer,
                     </tbody>
                 </table>
             </div>
-            {epic.assignment && <p className="assigned-to-label">Assigned to <strong>{epic.assignment?.employee?.firstName} {epic.assignment?.employee?.lastName}</strong></p>}
+            {epic.assignment && <div className="assign-container"><p className="col assigned-to-label">Assigned to <button className="delete-assignment" onClick={deleteAssignment}>X</button><strong>{epic.assignment?.employee?.firstName} {epic.assignment?.employee?.lastName}</strong></p></div>}
             {!epic.assignment && <button className="assign-epic-button w-100 mt-4" onClick={() => onAssignEpicClick && onAssignEpicClick(epic)}>Assign Epic</button>}
         </div>
     );

@@ -517,14 +517,25 @@ export abstract class ProjectItem implements BarryObject {
 export interface AssignmentProps {
     id: number
     createDate: Date
+    startDate: Date
+    estimatedEndDate: Date
     creator?: Person
     employee?: Person
     done?: boolean
 }
 
+export interface ReportProps {
+    id: number
+    date: Date
+    employee?: Person
+    type?: string
+}
+
 export abstract class Assignment implements BarryObject {
     id: number
     createDate: Date
+    startDate: Date
+    estimatedEndDate: Date
     creator: Person | undefined
     employee: Person | undefined
     done: boolean | undefined
@@ -533,6 +544,8 @@ export abstract class Assignment implements BarryObject {
     public constructor(props: AssignmentProps) {
         this.id = props.id;
         this.createDate = stringToDate(props.createDate) ?? props.createDate;
+        this.startDate = stringToDate(props.startDate) ?? props.startDate;
+        this.estimatedEndDate = stringToDate(props.estimatedEndDate) ?? props.estimatedEndDate;
         this.creator = props.creator;
         this.employee = props.employee;
         this.done = props.done;
@@ -543,17 +556,36 @@ export abstract class Assignment implements BarryObject {
     abstract merge(props: any): void;
 }
 
+export abstract class Report implements BarryObject {
+    id: number
+    date: Date
+    employee: Person | undefined
+    type: string | undefined
+    publisher: BarryEventPublisher;
+
+    public constructor(props: ReportProps) {
+        this.id = props.id;
+        this.employee = props.employee;
+        this.type = props.type;
+        this.date = stringToDate(props.date) ?? props.date;
+        this.publisher = new BarryEventPublisher();
+    }
+
+    abstract get getObjectType(): string | undefined;
+    abstract merge(props: any): void;
+}
+
 export interface EpicProps extends ProjectItemProps {
     feature?: Feature
     startDate?: Date | undefined
-    duration?: number | undefined
+    estimatedDuration?: number | undefined
     assignment?: Assignment | undefined
 }
 
 export class Epic extends ProjectItem {
     feature: Feature | undefined
     startDate: Date | undefined
-    duration: number;
+    estimatedDuration: number | undefined;
     assignment: Assignment | undefined;
     private _featureId: number | undefined = undefined;
 
@@ -565,7 +597,7 @@ export class Epic extends ProjectItem {
         this._featureId = this.feature?.id ?? (props as any).featureId;
 
         this.startDate = stringToDate(props.startDate);
-        this.duration = typeof props.duration !== 'undefined' ? parseInt(props.duration.toString()) : 0;
+        this.estimatedDuration = props.estimatedDuration;
 
         this.assignment = props.assignment;
     }

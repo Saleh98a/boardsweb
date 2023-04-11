@@ -41,7 +41,7 @@ const HeaderUserMenu: FC = () => {
       </div>
 
       <div className='menu-item px-5'>
-        <Link to={'/crafted/pages/profile/absences'} className='menu-link px-5'>
+        <Link to={'/crafted/pages/absences'} className='menu-link px-5'>
           Absence Days
         </Link>
       </div>

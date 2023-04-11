@@ -61,7 +61,11 @@ export function Projects() {
   }
 
   function didClickEpic(epic: Epic) {
-
+    userListner.current?.removeFromPublisherWithHandlers(currentUser?.publisher, undefined, userListner);
+    history.push('/project-page/', {
+      project: epic.feature?.project,
+      name: epic.feature?.project?.name,
+    });
   }
 
 
@@ -89,7 +93,7 @@ export function Projects() {
       <div className='row g-6 g-xl-9' style={{ marginBottom: '20px' }}>
         {
           ((currentUser instanceof Manager ? (currentUser as Manager)?.projects : (currentUser as Employee)?.epics) ?? []).map((pr: any, i: number) => {
-            return <div className='col-md-6 col-xl-4' key={i} onClick={() => { didClickProject(pr) }}>
+            return <div className='col-md-6 col-xl-4' key={i} onClick={() => { currentUser instanceof Manager ? didClickProject(pr) : didClickEpic(pr) }}>
               <Card2
                 icon='/media/svg/brand-logos/xing-icon.svg'
                 badgeColor='primary'

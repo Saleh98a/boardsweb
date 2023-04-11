@@ -1,6 +1,7 @@
 
+import { report } from 'process';
 import '../app/models/_types';
-import { User, Employee, Project, Manager, PersonRole, BarryResponse, Epic, Feature, Assignment } from '../app/models/_types';
+import { User, Employee, Project, Manager, PersonRole, BarryResponse, Epic, Feature, Assignment, Report } from '../app/models/_types';
 import { createContext, FC, PropsWithChildren } from 'react';
 
 
@@ -14,6 +15,10 @@ type AssignmentFilter = {
 }
 
 type EmployeeFilter = {
+
+}
+
+type ReportFilter = {
 
 }
 
@@ -209,6 +214,27 @@ const BarryAPI = (function () {
             }
         },
 
+        assignments: {
+            delete: function (assignment: Assignment, callback: (result: boolean | null, error: Error | null) => void) {
+                if (!assignment)
+                    return callback(null, new Error('Missing epic object'));
+
+                fetch('http://localhost:8080/assignments/' + assignment.id, { method: 'DELETE' })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log('data:', data);
+                        if (data == null || !data['data'] || data['data'] == null)
+                            return callback(null, new Error('Request returned with no epic object'));
+
+                        console.log(data);
+                        callback(data['data'], null);
+                    }).catch((err) => {
+                        console.log(err);
+                        callback(null, err);
+                    });
+            }
+        },
+
         employees: {
             get: function (filter: EmployeeFilter = {}, callback: (employees: Array<Employee>, error: Error | null) => void) {
                 var params: { [key: string]: any; } = {};
@@ -236,6 +262,29 @@ const BarryAPI = (function () {
                     .catch((err) => {
                         console.log(err.message);
                         callback(new Array<Employee>(), err);
+                    });
+            },
+        },
+
+        reports: {
+            get: function (employee: Employee, callback: (employees: Array<Report>, error: Error | null) => void) {
+                let url = 'http://localhost:8080/employees/' + employee.accountId + '/reports';
+                console.log('url', url);
+                fetch(url)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        const resp = new BarryResponse(Employee, data);
+                        console.log('response:', resp);
+                        if (Array.isArray(data['data'])) {
+                            callback(data['data'], null);
+                        } else {
+                            callback([data['data']], null);
+                        }
+                    })
+                    .catch((err) => {
+                        console.log(err.message);
+                        callback(new Array<Report>(), err);
                     });
             },
         },

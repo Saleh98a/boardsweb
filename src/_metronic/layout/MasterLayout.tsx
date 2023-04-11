@@ -1,12 +1,12 @@
 import React from 'react'
-import {AsideDefault} from './components/aside/AsideDefault'
-import {Footer} from './components/Footer'
-import {HeaderWrapper} from './components/header/HeaderWrapper'
-import {Toolbar} from './components/toolbar/Toolbar'
-import {ScrollTop} from './components/ScrollTop'
-import {Content} from './components/Content'
-import {MasterInit} from './MasterInit'
-import {PageDataProvider} from './core'
+import { AsideDefault } from './components/aside/AsideDefault'
+import { Footer } from './components/Footer'
+import { HeaderWrapper } from './components/header/HeaderWrapper'
+import { Toolbar } from './components/toolbar/Toolbar'
+import { ScrollTop } from './components/ScrollTop'
+import { Content } from './components/Content'
+import { MasterInit } from './MasterInit'
+import { PageDataProvider } from './core'
 import {
   DrawerMessenger,
   ExploreMain,
@@ -17,13 +17,13 @@ import {
   NewProjectModal
 } from '../partials'
 
-const MasterLayout: React.FC = ({children}) => {
+const MasterLayout: React.FC = ({ children }) => {
   return (
     <PageDataProvider>
       <div className='page d-flex flex-row flex-column-fluid'>
         {/* <AsideDefault /> */}
-        <div className='wrapper d-flex flex-column flex-row-fluid' id='kt_wrapper' style={{paddingLeft: '0px'}}>
-          <HeaderWrapper/>
+        <div className='wrapper d-flex flex-column flex-row-fluid' id='kt_wrapper' style={{ paddingLeft: '0px' }}>
+          <HeaderWrapper />
 
           <div id='kt_content' className='content d-flex flex-column flex-column-fluid'>
             {/* <Toolbar /> */}
@@ -45,7 +45,7 @@ const MasterLayout: React.FC = ({children}) => {
       <Main />
       <InviteUsers />
       <UpgradePlan />
-      <NewProjectModal/>
+      <NewProjectModal />
       {/* end:: Modals */}
 
       <MasterInit />
@@ -54,4 +54,4 @@ const MasterLayout: React.FC = ({children}) => {
   )
 }
 
-export {MasterLayout}
+export { MasterLayout }

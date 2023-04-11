@@ -42,6 +42,11 @@
     background-color: #cfcccc;
 }
 
+.assign-container {
+    display: flex;
+    align-items: baseline;
+}
+
 .assign-epic-button {
     border: none;
     background-color: cfcccc;
@@ -53,9 +58,17 @@
     background-color: white;
 }
 
-.assigned-to-label {
+.assigned-to-label {}
+
+.delete-assignment {
     margin-top: 8px;
-    margin-bottom: 0;
+    border: none;
+    background-color: transparent;
+}
+
+.delete-assignment:hover {
+    background-color: transparent;
+    color: red;
 }
 
 .droppable-feature {
@@ -128,4 +141,20 @@
 [contenteditable="true"].single-line * {
     display: inline;
     white-space: nowrap;
+}
+
+.absence-row {
+    font-size: 1em;
+    text-align: center;
+    font-weight: bold;
+}
+
+.new-report-modal {
+    width: fit-content;
+}
+
+.delete-report-action {}
+
+.delete-report-action:hover {
+    color: red;
 }
