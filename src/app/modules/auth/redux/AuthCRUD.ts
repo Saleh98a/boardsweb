@@ -18,12 +18,15 @@ export function login(email: string, password: string) {
 }
 
 // Server should return AuthModel
-export function register(email: string, firstName: string, lastName: string, password: string, accountType: string) {
+export function register(email: string, firstName: string, lastName: string, password: string, accountType: string, days: number[]) {
   return axios.post<AuthModel>(accountType === 'Employee' ? EMPLOYEE_REGISTER_URL : MANAGER_REGISTER_URL, {
     email,
     firstName,
     lastName,
     password,
+    workTable: days.map(day => {
+      return { weekDay: day }
+    })
   });
 }
 

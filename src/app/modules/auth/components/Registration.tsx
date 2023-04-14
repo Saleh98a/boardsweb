@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -17,6 +17,7 @@ const initialValues = {
   changepassword: '',
   acceptTerms: false,
   accountType: 'Employee',
+  days: [1, 2, 3, 4, 5]
 }
 
 const registrationSchema = Yup.object().shape({
@@ -55,7 +56,7 @@ export function Registration() {
     onSubmit: (values, { setStatus, setSubmitting }) => {
       setLoading(true)
       setTimeout(() => {
-        register(values.email, values.firstname, values.lastname, values.password, values.accountType)
+        register(values.email, values.firstname, values.lastname, values.password, values.accountType, values.days)
           .then(() => {
             setLoading(false)
             dispatch(auth.actions.login('', values.email, values.password))
@@ -73,6 +74,20 @@ export function Registration() {
     formik.values.accountType = event.target.value;
   }
 
+  function onWorkingDaysChange(event: FormEvent<HTMLInputElement>): void {
+    const day = Number.parseInt(event.currentTarget.value);
+    const days = formik.values.days;
+    if (days.includes(day) && !event.currentTarget.checked) {
+      const index = days.indexOf(day, 0);
+      if (index > -1) {
+        days.splice(index, 1);
+      }
+    } else if (!days.includes(day) && event.currentTarget.checked && !days.includes(day)) {
+      days.push(day);
+    }
+    console.log("working days", days);
+  }
+
   return (
     <form
       className='form w-100 fv-plugins-bootstrap5 fv-plugins-framework'
@@ -85,34 +100,8 @@ export function Registration() {
         {/* begin::Title */}
         <h1 className='text-dark mb-3'>Create an Account</h1>
         {/* end::Title */}
-
-        {/* begin::Link */}
-        <div className='text-gray-400 fw-bold fs-4'>
-          Already have an account?
-          <Link to='/auth/login' className='link-primary fw-bolder' style={{ marginLeft: '5px' }}>
-            Forgot Password ?
-          </Link>
-        </div>
-        {/* end::Link */}
       </div>
       {/* end::Heading */}
-
-      {/* begin::Action */}
-      <button type='button' className='btn btn-light-primary fw-bolder w-100 mb-10'>
-        <img
-          alt='Logo'
-          src={toAbsoluteUrl('/media/svg/brand-logos/google-icon.svg')}
-          className='h-20px me-3'
-        />
-        Sign in with Google
-      </button>
-      {/* end::Action */}
-
-      <div className='d-flex align-items-center mb-10'>
-        <div className='border-bottom border-gray-300 mw-50 w-100'></div>
-        <span className='fw-bold text-gray-400 fs-7 mx-2'>OR</span>
-        <div className='border-bottom border-gray-300 mw-50 w-100'></div>
-      </div>
 
       {formik.status && (
         <div className='mb-lg-15 alert alert-danger'>
@@ -266,12 +255,12 @@ export function Registration() {
       {/* end::Form group */}
 
       {/* begin::Form group */}
-      <div className='fv-row mb-10'>
+      <div className='fv-row mb-10 mt-10'>
         <div className="form-check form-check-inline">
           <input
             className="form-check-input" type="radio" name="accountType" id="flexRadioDefault1" value="Employee"
             onClick={onAccountTypeChange}
-            checked />
+            defaultChecked />
           <label className="form-check-label" htmlFor="flexRadioDefault1">
             Employee
           </label>
@@ -283,6 +272,79 @@ export function Registration() {
           />
           <label className="form-check-label" htmlFor="flexRadioDefault2">
             Manager
+          </label>
+        </div>
+      </div>
+      {/* end::Form group */}
+
+      {/* begin::Form group */}
+      <label className='form-label fw-bolder text-dark fs-6  mb-4'>Working Days</label>
+      <div className='fv-row mb-10'>
+        <div className="form-check form-check-inline mb-4">
+          <input
+            className="form-check-input" type="checkbox" name="accountType" id="flexCheckboxDefault1" value="1"
+            onClick={onWorkingDaysChange}
+            defaultChecked />
+          <label className="form-check-label" htmlFor="flexCheckboxDefault1">
+            Sunday
+          </label>
+        </div>
+        <div className="form-check form-check-inline mb-4">
+          <input
+            className="form-check-input" type="checkbox" name="accountType" id="flexCheckboxDefault2" value="2"
+            onClick={onWorkingDaysChange}
+            defaultChecked
+          />
+          <label className="form-check-label" htmlFor="flexCheckboxDefault2">
+            Monday
+          </label>
+        </div>
+        <div className="form-check form-check-inline mb-4">
+          <input
+            className="form-check-input" type="checkbox" name="accountType" id="flexCheckboxDefault3" value="3"
+            onClick={onWorkingDaysChange}
+            defaultChecked
+          />
+          <label className="form-check-label" htmlFor="flexCheckboxDefault3">
+            Tuesday
+          </label>
+        </div>
+        <div className="form-check form-check-inline mb-4">
+          <input
+            className="form-check-input" type="checkbox" name="accountType" id="flexCheckboxDefault4" value="4"
+            onClick={onWorkingDaysChange}
+            defaultChecked
+          />
+          <label className="form-check-label" htmlFor="flexCheckboxDefault4">
+            Wednesday
+          </label>
+        </div>
+        <div className="form-check form-check-inline mb-4">
+          <input
+            className="form-check-input" type="checkbox" name="accountType" id="flexCheckboxDefault5" value="5"
+            onClick={onWorkingDaysChange}
+            defaultChecked
+          />
+          <label className="form-check-label" htmlFor="flexCheckboxDefault5">
+            Thursday
+          </label>
+        </div>
+        <div className="form-check form-check-inline mb-4">
+          <input
+            className="form-check-input" type="checkbox" name="accountType" id="flexCheckboxDefault6" value="6"
+            onClick={onWorkingDaysChange}
+          />
+          <label className="form-check-label" htmlFor="flexCheckboxDefault6">
+            Friday
+          </label>
+        </div>
+        <div className="form-check form-check-inline mb-4">
+          <input
+            className="form-check-input" type="checkbox" name="accountType" id="flexCheckboxDefault7" value="7"
+            onClick={onWorkingDaysChange}
+          />
+          <label className="form-check-label" htmlFor="flexCheckboxDefault7">
+            Saturday
           </label>
         </div>
       </div>
@@ -301,8 +363,8 @@ export function Registration() {
             className='form-check-label fw-bold text-gray-700 fs-6'
             htmlFor='kt_login_toc_agree'
           >
-            I Agree the{' '} {formik.values.accountType}
-            <Link to='/auth/terms' className='ms-1 link-primary'>
+            I Agree to the
+            <Link to='/auth/terms' className='ms-1 link-primary'  >
               terms and conditions
             </Link>
             .
