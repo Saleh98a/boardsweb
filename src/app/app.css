@@ -158,3 +158,15 @@
 .delete-report-action:hover {
     color: red;
 }
+
+/* .schedule-row {
+    flex: 1;
+    display: flex;
+    overflow: scroll;
+}
+
+.schedule-row-content {
+    display: flex;
+    min-height: min-content;
+}
+*/

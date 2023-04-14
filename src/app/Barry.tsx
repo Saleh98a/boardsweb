@@ -287,6 +287,70 @@ const BarryAPI = (function () {
                         callback(new Array<Report>(), err);
                     });
             },
+
+            create: function (employee: Employee, date: Date, callback: (report: Report | null, error: Error | null) => void) {
+                if (!employee || employee == null)
+                    return callback(null, new Error('Missing employee object'));
+
+                if (!date || date == null)
+                    return callback(null, new Error('Missing employee object'));
+
+                var formData = new FormData();
+                formData.append('dates', date.toDateString());
+
+                fetch('http://localhost:8080/employees/' + employee.accountId + '/report', { method: 'POST', body: formData })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log('data:', data);
+                        if (data == null || !data['data'] || data['data'] == null || data['data'].length == 0)
+                            return callback(null, new Error('Request returned with no report object'));
+
+                        console.log(data);
+                        callback(data['data'][0], null);
+                    }).catch((err) => {
+                        console.log(err);
+                        callback(null, err);
+                    });
+            },
+
+
+            delete: function (report: Report, callback: (result: boolean | null, error: Error | null) => void) {
+                if (!report || report == null)
+                    return callback(null, new Error('Missing report object'));
+
+                fetch('http://localhost:8080/reports/' + report.id, { method: 'DELETE' })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log('data:', data);
+                        if (data == null || !data['data'] || data['data'] == null)
+                            return callback(null, new Error('Request returned with no deleted report'));
+
+                        console.log(data);
+                        callback(data['data'], null);
+                    }).catch((err) => {
+                        console.log(err);
+                        callback(null, err);
+                    });
+            },
+        },
+
+        schedule: {
+            get: function (callback: (result: Object | null, error: Error | null) => void) {
+
+                fetch('http://localhost:8080/schedule/', { method: 'GET' })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log('data:', data);
+                        if (data == null || !data['data'] || data['data'] == null)
+                            return callback(null, new Error('Request returned with no schedule'));
+
+                        console.log(data);
+                        callback(data['data'], null);
+                    }).catch((err) => {
+                        console.log(err);
+                        callback(null, err);
+                    });
+            }
         },
 
     }

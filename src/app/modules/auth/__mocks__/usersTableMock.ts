@@ -1,5 +1,5 @@
-import {toAbsoluteUrl} from '../../../../_metronic/helpers'
-import {UserModel} from '../models/UserModel'
+import { toAbsoluteUrl } from '../../../../_metronic/helpers'
+import { UserModel } from '../models/UserModel'
 
 export class UsersTableMock {
   public static table: Array<UserModel> = [
@@ -17,9 +17,9 @@ export class UsersTableMock {
       },
       roles: [1], // Administrator
       pic: toAbsoluteUrl('/media/avatars/150-2.jpg'),
-      fullname: 'Sean S',
-      firstname: 'Sean',
-      lastname: 'Stark',
+      fullName: 'Sean S',
+      firstName: 'Sean',
+      lastName: 'Stark',
       occupation: 'CEO',
       companyName: 'Keenthemes',
       phone: '456669067890',
@@ -77,9 +77,9 @@ export class UsersTableMock {
       },
       roles: [2], // Manager
       pic: toAbsoluteUrl('/media/avatars/150-1.jpg'),
-      fullname: 'Megan F',
-      firstname: 'Megan',
-      lastname: 'Fox',
+      fullName: 'Megan F',
+      firstName: 'Megan',
+      lastName: 'Fox',
       occupation: 'Deputy Head of Keenthemes in New York office',
       companyName: 'Keenthemes',
       phone: '456669067891',
@@ -136,9 +136,9 @@ export class UsersTableMock {
       },
       roles: [3], // Guest
       pic: toAbsoluteUrl('/media/avatars/150-5.jpg'),
-      fullname: 'Manu G',
-      firstname: 'Manu',
-      lastname: 'Ginobili',
+      fullName: 'Manu G',
+      firstName: 'Manu',
+      lastName: 'Ginobili',
       occupation: 'CFO',
       companyName: 'Keenthemes',
       phone: '456669067892',

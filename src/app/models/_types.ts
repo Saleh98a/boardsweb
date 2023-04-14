@@ -522,6 +522,7 @@ export interface AssignmentProps {
     creator?: Person
     employee?: Person
     done?: boolean
+    epic?: Epic
 }
 
 export interface ReportProps {
@@ -539,6 +540,7 @@ export abstract class Assignment implements BarryObject {
     creator: Person | undefined
     employee: Person | undefined
     done: boolean | undefined
+    epic: Epic | undefined
     publisher: BarryEventPublisher;
 
     public constructor(props: AssignmentProps) {
@@ -549,6 +551,7 @@ export abstract class Assignment implements BarryObject {
         this.creator = props.creator;
         this.employee = props.employee;
         this.done = props.done;
+        this.epic = props.epic;
         this.publisher = new BarryEventPublisher();
     }
 

@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import { StepperComponent } from '../../../assets/ts/components'
 import { BarryApp, BarryAPI, Project } from '../../../../app/Barry';
 import { useBarry } from '../../../../app/BarryContext'
-import { Manager } from '../../../../app/models/_types'
+import { Employee, Manager, Report } from '../../../../app/models/_types'
 import { Button, Form, Modal } from 'react-bootstrap-v5'
 import "react-datepicker/dist/react-datepicker.css"
 import DatePicker from "react-datepicker";
@@ -29,7 +29,7 @@ const createAppSchema = [
 export type NewReportModalProps = {
   isVisible: boolean
   onVisibility?: ((visible: boolean) => void) | undefined
-  onSubmit?: (() => void) | undefined
+  onSubmit?: ((report: Report) => void) | undefined
 }
 
 const NewReportModal: FC<NewReportModalProps> = ({ isVisible, onVisibility, onSubmit }) => {
@@ -41,7 +41,18 @@ const NewReportModal: FC<NewReportModalProps> = ({ isVisible, onVisibility, onSu
 
   const handleSubmit = () => {
 
-    onSubmit && onSubmit();
+    const date = startDate;
+
+    BarryAPI.reports.create(currentUser! as Employee, date, (report: Report | null, error: Error | null) => {
+      if (!report || error != null) {
+        // Failed to fetch 
+      } else {
+        // epicToBeAssigned!.assignment = assignment;
+        onSubmit && onSubmit(report);
+        console.log(report);
+      }
+    })
+
     handleClose();
 
   }

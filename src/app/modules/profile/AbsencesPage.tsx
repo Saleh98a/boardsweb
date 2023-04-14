@@ -41,8 +41,14 @@ const AbsencesPage: React.FC = () => {
   const [reportsList, setReportsList] = useState<Report[] | undefined>(undefined);
 
   useEffect(() => {
+    // setTimeout(() => {
+    //   BarryAPI.reports.get(currentUser as Employee, (reports, error) => {
+    //     setReportsList(reports!);
+    //   });
+    // }, reportsList ? 500 : 0);
+
     BarryAPI.reports.get(currentUser as Employee, (reports, error) => {
-      setReportsList(reports!);
+      setReportsList(reports!.sort((ra, rb) => ra.date > rb.date ? 1 : -1));
     });
   }, [isNewReportModalVisible]);
 
@@ -50,9 +56,22 @@ const AbsencesPage: React.FC = () => {
     setNewReportModalVisible(true);
   }
 
+  function onSubmit(report: Report) {
+    reportsList!.push(report);
+    reportsList!.sort((ra, rb) => ra.date > rb.date ? 1 : -1);
+    setReportsList(reportsList);
+  }
+
+  function deleteReport(report: Report) {
+    BarryAPI.reports.delete(report, (result, error) => {
+      if (result) {
+        setReportsList(reportsList?.filter(r => r.id !== report.id));
+      }
+    });
+  }
+
   return (
     <>
-
       <div className='d-flex flex-wrap flex-stack mb-6'>
         <h3 className='fw-bolder my-2'>
           Absences Reports
@@ -66,8 +85,7 @@ const AbsencesPage: React.FC = () => {
             data-bs-toggle='modal'
             data-bs-target='#kt_modal_new_report'
             id='kt_toolbar_primary_button'
-            onClick={onNewReportClick}
-          >
+            onClick={onNewReportClick}>
             New Report
           </a>
         </div>
@@ -75,18 +93,19 @@ const AbsencesPage: React.FC = () => {
       <br />
       <ListGroup as="ol" className="my-2">
         {reportsList?.map((report) => {
+
           return (
-            <ListGroup className="absence-row" as="ol" horizontal>
+            <ListGroup key={report.id} className="absence-row" as="ol" horizontal>
               <ListGroup.Item as="li" className="w-100">{weekday[(new Date(report.date)).getDay()]}</ListGroup.Item>
               <ListGroup.Item as="li" className="w-100">{(new Date(report.date)).toLocaleDateString()}</ListGroup.Item>
               <ListGroup.Item as="li" className="w-100">{report.type}</ListGroup.Item>
-              <ListGroup.Item className="w-25 delete-report-action" action as="li"><FontAwesomeIcon icon={faTrashCan} /></ListGroup.Item>
+              <ListGroup.Item className="w-25 delete-report-action" action as="li" onClick={() => deleteReport(report)}><FontAwesomeIcon icon={faTrashCan} /></ListGroup.Item>
             </ListGroup>
           )
         })}
       </ListGroup>
 
-      <NewReportModal isVisible={isNewReportModalVisible} onVisibility={(visible) => setNewReportModalVisible(visible)} onSubmit={undefined} />
+      <NewReportModal isVisible={isNewReportModalVisible} onVisibility={(visible) => setNewReportModalVisible(visible)} onSubmit={onSubmit} />
 
     </>
   )
