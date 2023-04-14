@@ -67,7 +67,7 @@ const NewReportModal: FC<NewReportModalProps> = ({ isVisible, onVisibility, onSu
   }, [isVisible])
 
   return (
-    <Modal show={show} className='modal fade' dialogClassName='new-report-modal' id='kt_modal_new_report' aria-hidden='true'>
+    <Modal show={show} className='modal fade' dialogClassName='new-report-modal' aria-hidden='true'>
       <Modal.Header closeButton>
         <Modal.Title>Create Report</Modal.Title>
       </Modal.Header>
