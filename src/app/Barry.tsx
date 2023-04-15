@@ -141,9 +141,15 @@ const BarryAPI = (function () {
                         const resp = new BarryResponse(Project, data);
                         console.log('response:', resp);
                         if (Array.isArray(data['data'])) {
-                            callback(data['data'].map(a => a.epic), null);
+                            callback(data['data'].map(a => {
+                                a.epic.assignment = a;
+                                return a.epic
+                            }), null);
                         } else {
-                            callback([data['data']].map(a => a.epic), null);
+                            callback([data['data']].map(a => {
+                                a.epic.assignment = a;
+                                return a.epic
+                            }), null);
                         }
                     })
                     .catch((err) => {

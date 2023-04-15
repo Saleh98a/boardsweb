@@ -34,13 +34,13 @@ const HeaderUserMenu: FC = () => {
       <div className='separator my-2'></div>
 
       <div className='menu-item px-5'>
-        <Link to={'/crafted/pages/profile'} className='menu-link px-5'>
+        <Link to={'/pages/profile'} className='menu-link px-5'>
           My Profile
         </Link>
       </div>
 
       <div className='menu-item px-5'>
-        <Link to={'/crafted/pages/absences'} className='menu-link px-5'>
+        <Link to={'/pages/absences'} className='menu-link px-5'>
           Absence Days
         </Link>
       </div>

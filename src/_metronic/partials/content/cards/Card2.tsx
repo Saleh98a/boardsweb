@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {FC} from 'react'
-import {Link} from 'react-router-dom'
-import {IconUserModel} from '../../../../app/modules/profile/ProfileModels'
-import {UsersList} from '../../../../app/modules/profile/components/UsersList'
-import {toAbsoluteUrl} from '../../../helpers'
+import { FC } from 'react'
+import { Link } from 'react-router-dom'
+import { IconUserModel } from '../../../../app/modules/profile/ProfileModels'
+import { UsersList } from '../../../../app/modules/profile/components/UsersList'
+import { toAbsoluteUrl } from '../../../helpers'
 
 type Props = {
   icon: string
@@ -32,7 +32,7 @@ const Card2: FC<Props> = ({
 }) => {
   return (
     <Link
-      to='/crafted/pages/profile/overview'
+      to='/pages/profile/overview'
       className='card border border-2 border-gray-300 border-hover'
     >
       <div className='card-header border-0 pt-9'>
@@ -57,12 +57,12 @@ const Card2: FC<Props> = ({
         <div className='d-flex flex-wrap mb-5'>
           <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-7 mb-3'>
             <div className='fs-6 text-gray-800 fw-bolder'>{date}</div>
-            <div className='fw-bold text-gray-400'>Due Date</div>
+            <div className='fw-bold text-gray-400'>Start Date</div>
           </div>
 
           <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 mb-3'>
             <div className='fs-6 text-gray-800 fw-bolder'>{budget}</div>
-            <div className='fw-bold text-gray-400'>Budget</div>
+            <div className='fw-bold text-gray-400'>End Date</div>
           </div>
         </div>
 
@@ -74,7 +74,7 @@ const Card2: FC<Props> = ({
           <div
             className={`bg-${statusColor} rounded h-4px`}
             role='progressbar'
-            style={{width: `${progress}%`}}
+            style={{ width: `${progress}%` }}
           ></div>
         </div>
 
@@ -84,4 +84,4 @@ const Card2: FC<Props> = ({
   )
 }
 
-export {Card2}
+export { Card2 }

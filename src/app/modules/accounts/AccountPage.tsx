@@ -1,14 +1,14 @@
 import React from 'react'
-import {Redirect, Route, Switch} from 'react-router-dom'
-import {PageLink, PageTitle} from '../../../_metronic/layout/core'
-import {Overview} from './components/Overview'
-import {Settings} from './components/settings/Settings'
-import {AccountHeader} from './AccountHeader'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import { PageLink, PageTitle } from '../../../_metronic/layout/core'
+import { Overview } from './components/Overview'
+import { Settings } from './components/settings/Settings'
+import { AccountHeader } from './AccountHeader'
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
     title: 'Account',
-    path: '/crafted/account/overview',
+    path: '/account/overview',
     isSeparator: false,
     isActive: false,
   },
@@ -25,17 +25,17 @@ const AccountPage: React.FC = () => {
     <>
       <AccountHeader />
       <Switch>
-        <Route path='/crafted/account/overview'>
+        <Route path='/account/overview'>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Overview</PageTitle>
           <Overview />
         </Route>
-        <Route path='/crafted/account/settings'>
+        <Route path='/account/settings'>
           <PageTitle breadcrumbs={accountBreadCrumbs}>Settings</PageTitle>
           <Settings />
         </Route>
 
-        <Redirect from='/crafted/account' exact={true} to='/crafted/account/overview' />
-        <Redirect to='/crafted/account/overview' />
+        <Redirect from='/account' exact={true} to='/account/overview' />
+        <Redirect to='/account/overview' />
       </Switch>
     </>
   )

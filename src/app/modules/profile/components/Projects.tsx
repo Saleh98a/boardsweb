@@ -92,20 +92,40 @@ export function Projects() {
 
       <div className='row g-6 g-xl-9' style={{ marginBottom: '20px' }}>
         {
-          ((currentUser instanceof Manager ? (currentUser as Manager)?.projects : (currentUser as Employee)?.epics) ?? []).map((pr: any, i: number) => {
-            return <div className='col-md-6 col-xl-4' key={i} onClick={() => { currentUser instanceof Manager ? didClickProject(pr) : didClickEpic(pr) }}>
-              <Card2
-                icon='/media/svg/brand-logos/xing-icon.svg'
-                badgeColor='primary'
-                status='In Progress'
-                statusColor='primary'
-                title={pr.name ?? 'Unnamed Epic'}
-                description={pr.description ?? ''}
-                date={pr && pr.createDate ? new Date(pr.createDate).toLocaleString() : ''}//'Start Date: Mar 14, 2021'
-                budget='End Date: Mar 14, 2022'
-                progress={40}
-              />
-            </div>
+          ((currentUser instanceof Manager ? (currentUser as Manager)?.projects : epics) ?? []).map((pr: any, i: number) => {
+
+            if (currentUser instanceof Manager) {
+              return <div className='col-md-6 col-xl-4' key={i} onClick={() => { didClickProject(pr) }}>
+                <Card2
+                  icon='/media/svg/brand-logos/xing-icon.svg'
+                  badgeColor='primary'
+                  status='In Progress'
+                  statusColor='primary'
+                  title={pr.name ?? 'Unnamed Epic'}
+                  description={pr.description ?? ''}
+                  date={pr && pr.createDate ? new Date(pr.createDate).toLocaleString() : ''}
+                  budget={pr && pr.createDate ? new Date(pr.createDate).toLocaleString() : ''}
+                  progress={40}
+                />
+              </div>
+            }
+            else {
+              const epic: Epic = pr as Epic;
+              return <div className='col-md-6 col-xl-4' key={i} onClick={() => { didClickEpic(pr) }}>
+                <Card2
+                  icon='/media/svg/brand-logos/xing-icon.svg'
+                  badgeColor='primary'
+                  status='In Progress'
+                  statusColor='primary'
+                  title={pr.name ?? 'Unnamed Epic'}
+                  description={pr.description ?? ''}
+                  date={epic.assignment?.startDate ? new Date(epic.assignment?.startDate).toLocaleDateString() : ''}
+                  budget={epic.assignment?.estimatedEndDate ? new Date(epic.assignment?.estimatedEndDate).toLocaleDateString() : ''}
+                  progress={0}
+                />
+              </div>
+            }
+
           })
         }
       </div>

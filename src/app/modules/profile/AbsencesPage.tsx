@@ -21,7 +21,7 @@ import { Employee, Report } from '../../models/_types'
 const profileBreadCrumbs: Array<PageLink> = [
   {
     title: 'Profile',
-    path: '/crafted/pages/profile/overview',
+    path: '/pages/profile/overview',
     isSeparator: false,
     isActive: false,
   },

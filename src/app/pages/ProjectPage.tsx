@@ -196,10 +196,6 @@ const ProjectPage: React.FC<ProjectProps> = ({ }) => {
             <span className="mx-4">-</span>
             <span className="fw-normal text-muted">{features?.length ?? 0} Features</span>
           </h3>
-
-          <div className='d-flex flex-wrap my-2'>
-            <Button variant="primary" onClick={createFeature}>New Feature +</Button>
-          </div>
         </div>
 
         <CreateFeatureModal isVisible={isCreateFeatureVisible} onVisibility={(visible) => setCreateFeatureVisible(visible)} onSubmit={createFeatureSubmit} />

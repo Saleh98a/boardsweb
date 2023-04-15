@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
-import {KTSVG, toAbsoluteUrl} from '../../../_metronic/helpers'
-import {Link} from 'react-router-dom'
-import {Dropdown1} from '../../../_metronic/partials'
-import {useLocation} from 'react-router'
+import { KTSVG, toAbsoluteUrl } from '../../../_metronic/helpers'
+import { Link } from 'react-router-dom'
+import { Dropdown1 } from '../../../_metronic/partials'
+import { useLocation } from 'react-router'
 
 const AccountHeader: React.FC = () => {
   const location = useLocation()
@@ -161,7 +161,7 @@ const AccountHeader: React.FC = () => {
                   <div
                     className='bg-success rounded h-5px'
                     role='progressbar'
-                    style={{width: '50%'}}
+                    style={{ width: '50%' }}
                   ></div>
                 </div>
               </div>
@@ -175,9 +175,9 @@ const AccountHeader: React.FC = () => {
               <Link
                 className={
                   `nav-link text-active-primary me-6 ` +
-                  (location.pathname === '/crafted/account/overview' && 'active')
+                  (location.pathname === '/account/overview' && 'active')
                 }
-                to='/crafted/account/overview'
+                to='/account/overview'
               >
                 Overview
               </Link>
@@ -186,9 +186,9 @@ const AccountHeader: React.FC = () => {
               <Link
                 className={
                   `nav-link text-active-primary me-6 ` +
-                  (location.pathname === '/crafted/account/settings' && 'active')
+                  (location.pathname === '/account/settings' && 'active')
                 }
-                to='/crafted/account/settings'
+                to='/account/settings'
               >
                 Settings
               </Link>
@@ -200,4 +200,4 @@ const AccountHeader: React.FC = () => {
   )
 }
 
-export {AccountHeader}
+export { AccountHeader }

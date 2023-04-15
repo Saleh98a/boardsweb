@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import clsx from 'clsx'
-import {FC} from 'react'
-import {Link} from 'react-router-dom'
-import {KTSVG, toAbsoluteUrl, defaultAlerts, defaultLogs} from '../../../helpers'
+import { FC } from 'react'
+import { Link } from 'react-router-dom'
+import { KTSVG, toAbsoluteUrl, defaultAlerts, defaultLogs } from '../../../helpers'
 
 const HeaderNotificationsMenu: FC = () => (
   <div
@@ -11,7 +11,7 @@ const HeaderNotificationsMenu: FC = () => (
   >
     <div
       className='d-flex flex-column bgi-no-repeat rounded-top'
-      style={{backgroundImage: `url('${toAbsoluteUrl('/media/misc/pattern-1.jpg')}')`}}
+      style={{ backgroundImage: `url('${toAbsoluteUrl('/media/misc/pattern-1.jpg')}')` }}
     >
       <h3 className='text-white fw-bold px-9 mt-10 mb-6'>
         Notifications <span className='fs-8 opacity-75 ps-3'>24 reports</span>
@@ -81,7 +81,7 @@ const HeaderNotificationsMenu: FC = () => (
 
         <div className='py-3 text-center border-top'>
           <Link
-            to='/crafted/pages/profile'
+            to='/pages/profile'
             className='btn btn-color-gray-600 btn-active-color-primary'
           >
             View All <KTSVG path='/media/icons/duotune/arrows/arr064.svg' className='svg-icon-5' />
@@ -140,7 +140,7 @@ const HeaderNotificationsMenu: FC = () => (
         </div>
         <div className='py-3 text-center border-top'>
           <Link
-            to='/crafted/pages/profile'
+            to='/pages/profile'
             className='btn btn-color-gray-600 btn-active-color-primary'
           >
             View All <KTSVG path='/media/icons/duotune/arrows/arr064.svg' className='svg-icon-5' />
@@ -151,4 +151,4 @@ const HeaderNotificationsMenu: FC = () => (
   </div>
 )
 
-export {HeaderNotificationsMenu}
+export { HeaderNotificationsMenu }

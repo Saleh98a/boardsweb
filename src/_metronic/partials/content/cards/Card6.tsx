@@ -34,15 +34,15 @@ const Card6: FC<Props> = ({
 }) => {
     return (
         <Link
-            to='/crafted/pages/profile/overview'
+            to='/pages/profile/overview'
             className='card border border-2 border-gray-300 border-hover'
             style={{ width: "22rem" }}
         >
             <div className='card-body p-10'>
-                <div className="d-flex row">
-                    <div className='fs-4 fw-bolder text-dark col-6'>{title}</div>
+                <div className="d-flex flex-row justify-content-between">
+                    <div className='fs-4 fw-bolder text-dark'>{title}</div>
 
-                    <div className='card-toolbar col-1'>
+                    <div className='card-toolbar'>
                         <span className={`badge badge-light-${badgeColor} fw-bolder me-auto px-4 py-3`}>
                             {status}
                         </span>

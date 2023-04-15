@@ -170,9 +170,9 @@ const ProfileHeader: React.FC = () => {
               <Link
                 className={
                   `nav-link text-active-primary me-6 ` +
-                  (location.pathname === '/crafted/pages/profile/overview' && 'active')
+                  (location.pathname === '/pages/profile/overview' && 'active')
                 }
-                to='/crafted/pages/profile/overview'
+                to='/pages/profile/overview'
               >
                 Overview
               </Link>
@@ -181,9 +181,9 @@ const ProfileHeader: React.FC = () => {
               <Link
                 className={
                   `nav-link text-active-primary me-6 ` +
-                  (location.pathname === '/crafted/pages/profile/projects' && 'active')
+                  (location.pathname === '/pages/profile/projects' && 'active')
                 }
-                to='/crafted/pages/profile/projects'
+                to='/pages/profile/projects'
               >
                 Projects
               </Link>
@@ -192,9 +192,9 @@ const ProfileHeader: React.FC = () => {
               <Link
                 className={
                   `nav-link text-active-primary me-6 ` +
-                  (location.pathname === '/crafted/pages/profile/campaigns' && 'active')
+                  (location.pathname === '/pages/profile/campaigns' && 'active')
                 }
-                to='/crafted/pages/profile/campaigns'
+                to='/pages/profile/campaigns'
               >
                 Campaigns
               </Link>
@@ -203,9 +203,9 @@ const ProfileHeader: React.FC = () => {
               <Link
                 className={
                   `nav-link text-active-primary me-6 ` +
-                  (location.pathname === '/crafted/pages/profile/documents' && 'active')
+                  (location.pathname === '/pages/profile/documents' && 'active')
                 }
-                to='/crafted/pages/profile/documents'
+                to='/pages/profile/documents'
               >
                 Documents
               </Link>
@@ -214,9 +214,9 @@ const ProfileHeader: React.FC = () => {
               <Link
                 className={
                   `nav-link text-active-primary me-6 ` +
-                  (location.pathname === '/crafted/pages/profile/connections' && 'active')
+                  (location.pathname === '/pages/profile/connections' && 'active')
                 }
-                to='/crafted/pages/profile/connections'
+                to='/pages/profile/connections'
               >
                 Connections
               </Link>

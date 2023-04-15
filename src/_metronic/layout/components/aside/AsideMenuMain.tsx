@@ -28,40 +28,40 @@ export function AsideMenuMain() {
         </div>
       </div>
       <AsideMenuItemWithSub
-        to='/crafted/pages'
+        to='/pages'
         title='Pages'
         fontIcon='bi-archive'
         icon='/media/icons/duotune/general/gen022.svg'
       >
-        <AsideMenuItemWithSub to='/crafted/pages/profile' title='Profile' hasBullet={true}>
-          <AsideMenuItem to='/crafted/pages/profile/overview' title='Overview' hasBullet={true} />
-          <AsideMenuItem to='/crafted/pages/profile/projects' title='Projects' hasBullet={true} />
-          <AsideMenuItem to='/crafted/pages/profile/campaigns' title='Campaigns' hasBullet={true} />
-          <AsideMenuItem to='/crafted/pages/profile/documents' title='Documents' hasBullet={true} />
+        <AsideMenuItemWithSub to='/pages/profile' title='Profile' hasBullet={true}>
+          <AsideMenuItem to='/pages/profile/overview' title='Overview' hasBullet={true} />
+          <AsideMenuItem to='/pages/profile/projects' title='Projects' hasBullet={true} />
+          <AsideMenuItem to='/pages/profile/campaigns' title='Campaigns' hasBullet={true} />
+          <AsideMenuItem to='/pages/profile/documents' title='Documents' hasBullet={true} />
           <AsideMenuItem
-            to='/crafted/pages/profile/connections'
+            to='/pages/profile/connections'
             title='Connections'
             hasBullet={true}
           />
         </AsideMenuItemWithSub>
 
-        <AsideMenuItemWithSub to='/crafted/pages/wizards' title='Wizards' hasBullet={true}>
+        <AsideMenuItemWithSub to='/pages/wizards' title='Wizards' hasBullet={true}>
           <AsideMenuItem
-            to='/crafted/pages/wizards/horizontal'
+            to='/pages/wizards/horizontal'
             title='Horizontal'
             hasBullet={true}
           />
-          <AsideMenuItem to='/crafted/pages/wizards/vertical' title='Vertical' hasBullet={true} />
+          <AsideMenuItem to='/pages/wizards/vertical' title='Vertical' hasBullet={true} />
         </AsideMenuItemWithSub>
       </AsideMenuItemWithSub>
       <AsideMenuItemWithSub
-        to='/crafted/accounts'
+        to='/accounts'
         title='Accounts'
         icon='/media/icons/duotune/communication/com006.svg'
         fontIcon='bi-person'
       >
-        <AsideMenuItem to='/crafted/account/overview' title='Overview' hasBullet={true} />
-        <AsideMenuItem to='/crafted/account/settings' title='Settings' hasBullet={true} />
+        <AsideMenuItem to='/account/overview' title='Overview' hasBullet={true} />
+        <AsideMenuItem to='/account/settings' title='Settings' hasBullet={true} />
       </AsideMenuItemWithSub>
       <AsideMenuItemWithSub
         to='/error'
@@ -73,17 +73,17 @@ export function AsideMenuMain() {
         <AsideMenuItem to='/error/500' title='Error 500' hasBullet={true} />
       </AsideMenuItemWithSub>
       <AsideMenuItemWithSub
-        to='/crafted/widgets'
+        to='/widgets'
         title='Widgets'
         icon='/media/icons/duotune/general/gen025.svg'
         fontIcon='bi-layers'
       >
-        <AsideMenuItem to='/crafted/widgets/lists' title='Lists' hasBullet={true} />
-        <AsideMenuItem to='/crafted/widgets/statistics' title='Statistics' hasBullet={true} />
-        <AsideMenuItem to='/crafted/widgets/charts' title='Charts' hasBullet={true} />
-        <AsideMenuItem to='/crafted/widgets/mixed' title='Mixed' hasBullet={true} />
-        <AsideMenuItem to='/crafted/widgets/tables' title='Tables' hasBullet={true} />
-        <AsideMenuItem to='/crafted/widgets/feeds' title='Feeds' hasBullet={true} />
+        <AsideMenuItem to='/widgets/lists' title='Lists' hasBullet={true} />
+        <AsideMenuItem to='/widgets/statistics' title='Statistics' hasBullet={true} />
+        <AsideMenuItem to='/widgets/charts' title='Charts' hasBullet={true} />
+        <AsideMenuItem to='/widgets/mixed' title='Mixed' hasBullet={true} />
+        <AsideMenuItem to='/widgets/tables' title='Tables' hasBullet={true} />
+        <AsideMenuItem to='/widgets/feeds' title='Feeds' hasBullet={true} />
       </AsideMenuItemWithSub>
       <div className='menu-item'>
         <div className='menu-content'>

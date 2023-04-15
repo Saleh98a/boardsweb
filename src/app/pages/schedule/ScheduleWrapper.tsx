@@ -39,16 +39,19 @@ const SchedulePage: FC = () => {
           const employeePrefix = <div className='schedule-row-content me-8'><h3 style={{ width: '12rem' }}>{employee?.firstName} {employee?.lastName}</h3></div>
 
           const employeeRow = (schedule?.get(employeeAccountId))?.map((pr: Assignment, i: number) => {
+            const startDate = new Date(pr.startDate);
+            const endDate = new Date(pr.estimatedEndDate);
+            const dateNow = new Date();
             return <div className='schedule-row-content me-4' key={i} onClick={() => didClickAssignment(pr)}>
               <Card6
                 icon='/media/svg/brand-logos/xing-icon.svg'
                 badgeColor='primary'
-                status='In Progress'
+                status={startDate < dateNow && endDate > dateNow ? 'In Progress' : 'In Progress'}
                 statusColor='primary'
                 title={pr.epic?.name ?? 'Unnamed Epic'}
                 description={pr.epic?.description ?? ''}
-                startDate={pr && pr.startDate ? new Date(pr.startDate).toLocaleDateString() : ''}//'Start Date: Mar 14, 2021'
-                endDate={pr && pr.estimatedEndDate ? new Date(pr.estimatedEndDate).toLocaleDateString() : ''}//'Start Date: Mar 14, 2021'
+                startDate={pr && pr.startDate ? startDate.toLocaleDateString() : ''}//'Start Date: Mar 14, 2021'
+                endDate={pr && pr.estimatedEndDate ? endDate.toLocaleDateString() : ''}//'Start Date: Mar 14, 2021'
                 budget='End Date: Mar 14, 2022'
                 progress={40}
               />

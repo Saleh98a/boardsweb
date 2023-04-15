@@ -1,17 +1,17 @@
 import React from 'react'
-import {Redirect, Route, Switch} from 'react-router-dom'
-import {PageLink, PageTitle} from '../../../_metronic/layout/core'
-import {Charts} from './components/Charts'
-import {Feeds} from './components/Feeds'
-import {Lists} from './components/Lists'
-import {Tables} from './components/Tables'
-import {Mixed} from './components/Mixed'
-import {Statistics} from './components/Statistics'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import { PageLink, PageTitle } from '../../../_metronic/layout/core'
+import { Charts } from './components/Charts'
+import { Feeds } from './components/Feeds'
+import { Lists } from './components/Lists'
+import { Tables } from './components/Tables'
+import { Mixed } from './components/Mixed'
+import { Statistics } from './components/Statistics'
 
 const widgetsBreadCrumbs: Array<PageLink> = [
   {
     title: 'Widgets',
-    path: '/crafted/widgets/charts',
+    path: '/widgets/charts',
     isSeparator: false,
     isActive: false,
   },
@@ -26,32 +26,32 @@ const widgetsBreadCrumbs: Array<PageLink> = [
 const WidgetsPage: React.FC = () => {
   return (
     <Switch>
-      <Route path='/crafted/widgets/charts'>
+      <Route path='/widgets/charts'>
         <PageTitle breadcrumbs={widgetsBreadCrumbs}>Charts</PageTitle>
         <Charts />
       </Route>
-      <Route path='/crafted/widgets/feeds'>
+      <Route path='/widgets/feeds'>
         <PageTitle breadcrumbs={widgetsBreadCrumbs}>Feeds</PageTitle>
         <Feeds />
       </Route>
-      <Route path='/crafted/widgets/lists'>
+      <Route path='/widgets/lists'>
         <PageTitle breadcrumbs={widgetsBreadCrumbs}>Lists</PageTitle>
         <Lists />
       </Route>
-      <Route path='/crafted/widgets/mixed'>
+      <Route path='/widgets/mixed'>
         <PageTitle breadcrumbs={widgetsBreadCrumbs}>Mixed</PageTitle>
         <Mixed />
       </Route>
-      <Route path='/crafted/widgets/tables'>
+      <Route path='/widgets/tables'>
         <PageTitle breadcrumbs={widgetsBreadCrumbs}>Tables</PageTitle>
         <Tables />
       </Route>
-      <Route path='/crafted/widgets/statistics'>
+      <Route path='/widgets/statistics'>
         <PageTitle breadcrumbs={widgetsBreadCrumbs}>Statiscics</PageTitle>
         <Statistics />
       </Route>
-      <Redirect from='/crafted/widgets' exact={true} to='/crafted/widgets/lists' />
-      <Redirect to='/crafted/widgets/lists' />
+      <Redirect from='/widgets' exact={true} to='/widgets/lists' />
+      <Redirect to='/widgets/lists' />
     </Switch>
   )
 }

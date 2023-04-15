@@ -15,14 +15,14 @@ export function MenuInner() {
   //   <MenuItem title='Layout Builder' to='/builder' />
   //   <MenuInnerWithSub
   //     title='Crafted'
-  //     to='/crafted'
+  //     to=''
   //     menuPlacement='bottom-start'
   //     menuTrigger='click'
   //   >
   //     {/* PAGES */}
   //     <MenuInnerWithSub
   //       title='Pages'
-  //       to='/crafted/pages'
+  //       to='/pages'
   //       fontIcon='bi-archive'
   //       hasArrow={true}
   //       menuPlacement='right-start'
@@ -30,46 +30,46 @@ export function MenuInner() {
   //     >
   //       <MenuInnerWithSub
   //         title='Profile'
-  //         to='/crafted/pages/profile'
+  //         to='/pages/profile'
   //         hasArrow={true}
   //         hasBullet={true}
   //         menuPlacement='right-start'
   //         menuTrigger={`{default:'click', lg: 'hover'}`}
   //       >
-  //         <MenuItem to='/crafted/pages/profile/overview' title='Overview' hasBullet={true} />
-  //         <MenuItem to='/crafted/pages/profile/projects' title='Projects' hasBullet={true} />
-  //         <MenuItem to='/crafted/pages/profile/campaigns' title='Campaigns' hasBullet={true} />
-  //         <MenuItem to='/crafted/pages/profile/documents' title='Documents' hasBullet={true} />
+  //         <MenuItem to='/pages/profile/overview' title='Overview' hasBullet={true} />
+  //         <MenuItem to='/pages/profile/projects' title='Projects' hasBullet={true} />
+  //         <MenuItem to='/pages/profile/campaigns' title='Campaigns' hasBullet={true} />
+  //         <MenuItem to='/pages/profile/documents' title='Documents' hasBullet={true} />
   //         <MenuItem
-  //           to='/crafted/pages/profile/connections'
+  //           to='/pages/profile/connections'
   //           title='Connections'
   //           hasBullet={true}
   //         />
   //       </MenuInnerWithSub>
   //       <MenuInnerWithSub
   //         title='Wizards'
-  //         to='/crafted/pages/wizards'
+  //         to='/pages/wizards'
   //         hasArrow={true}
   //         hasBullet={true}
   //         menuPlacement='right-start'
   //         menuTrigger={`{default:'click', lg: 'hover'}`}
   //       >
-  //         <MenuItem to='/crafted/pages/wizards/horizontal' title='Horizontal' hasBullet={true} />
-  //         <MenuItem to='/crafted/pages/wizards/vertical' title='Vertical' hasBullet={true} />
+  //         <MenuItem to='/pages/wizards/horizontal' title='Horizontal' hasBullet={true} />
+  //         <MenuItem to='/pages/wizards/vertical' title='Vertical' hasBullet={true} />
   //       </MenuInnerWithSub>
   //     </MenuInnerWithSub>
 
   //     {/* ACCOUNT */}
   //     <MenuInnerWithSub
   //       title='Accounts'
-  //       to='/crafted/accounts'
+  //       to='/accounts'
   //       fontIcon='bi-person'
   //       hasArrow={true}
   //       menuPlacement='right-start'
   //       menuTrigger={`{default:'click', lg: 'hover'}`}
   //     >
-  //       <MenuItem to='/crafted/account/overview' title='Overview' hasBullet={true} />
-  //       <MenuItem to='/crafted/account/settings' title='Settings' hasBullet={true} />
+  //       <MenuItem to='/account/overview' title='Overview' hasBullet={true} />
+  //       <MenuItem to='/account/settings' title='Settings' hasBullet={true} />
   //     </MenuInnerWithSub>
 
   //     {/* ERRORS */}
@@ -88,18 +88,18 @@ export function MenuInner() {
   //     {/* Widgets */}
   //     <MenuInnerWithSub
   //       title='Widgets'
-  //       to='/crafted/widgets'
+  //       to='/widgets'
   //       fontIcon='bi-layers'
   //       hasArrow={true}
   //       menuPlacement='right-start'
   //       menuTrigger={`{default:'click', lg: 'hover'}`}
   //     >
-  //       <MenuItem to='/crafted/widgets/lists' title='Lists' hasBullet={true} />
-  //       <MenuItem to='/crafted/widgets/statistics' title='Statistics' hasBullet={true} />
-  //       <MenuItem to='/crafted/widgets/charts' title='Charts' hasBullet={true} />
-  //       <MenuItem to='/crafted/widgets/mixed' title='Mixed' hasBullet={true} />
-  //       <MenuItem to='/crafted/widgets/tables' title='Tables' hasBullet={true} />
-  //       <MenuItem to='/crafted/widgets/feeds' title='Feeds' hasBullet={true} />
+  //       <MenuItem to='/widgets/lists' title='Lists' hasBullet={true} />
+  //       <MenuItem to='/widgets/statistics' title='Statistics' hasBullet={true} />
+  //       <MenuItem to='/widgets/charts' title='Charts' hasBullet={true} />
+  //       <MenuItem to='/widgets/mixed' title='Mixed' hasBullet={true} />
+  //       <MenuItem to='/widgets/tables' title='Tables' hasBullet={true} />
+  //       <MenuItem to='/widgets/feeds' title='Feeds' hasBullet={true} />
   //     </MenuInnerWithSub>
   //   </MenuInnerWithSub>
 

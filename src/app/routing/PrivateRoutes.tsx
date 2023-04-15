@@ -20,11 +20,11 @@ export function PrivateRoutes() {
         <Route path='/dashboard' component={ProfilePage} />
         <Route path='/schedule' component={ScheduleWrapper} />
         <Route path='/builder' component={BuilderPageWrapper} />
-        <Route path='/crafted/pages/profile' component={ProfilePage} />
-        <Route path='/crafted/pages/absences' component={ChatPage} />
-        <Route path='/crafted/pages/wizards' component={WizardsPage} />
-        <Route path='/crafted/widgets' component={WidgetsPage} />
-        <Route path='/crafted/account' component={AccountPage} />
+        <Route path='/pages/profile' component={ProfilePage} />
+        <Route path='/pages/absences' component={ChatPage} />
+        <Route path='/pages/wizards' component={WizardsPage} />
+        <Route path='/widgets' component={WidgetsPage} />
+        <Route path='/account' component={AccountPage} />
         <Route path='/apps/chat' component={ChatPage} />
         <Route path='/menu-test' component={MenuTestPage} />
         <Route path="/project-page" component={ProjectPage} />

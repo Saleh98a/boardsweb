@@ -1,13 +1,13 @@
 import React from 'react'
-import {Redirect, Route, Switch} from 'react-router-dom'
-import {PageLink, PageTitle} from '../../../_metronic/layout/core'
-import {Vertical} from './components/Vertical'
-import {Horizontal} from './components/Horizontal'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import { PageLink, PageTitle } from '../../../_metronic/layout/core'
+import { Vertical } from './components/Vertical'
+import { Horizontal } from './components/Horizontal'
 
 const wizardsBreadCrumbs: Array<PageLink> = [
   {
     title: 'Wizards',
-    path: '/crafted/pages/wizards/horizontal',
+    path: '/pages/wizards/horizontal',
     isSeparator: false,
     isActive: false,
   },
@@ -22,16 +22,16 @@ const wizardsBreadCrumbs: Array<PageLink> = [
 const WizardsPage: React.FC = () => {
   return (
     <Switch>
-      <Route path='/crafted/pages/wizards/horizontal'>
+      <Route path='/pages/wizards/horizontal'>
         <PageTitle breadcrumbs={wizardsBreadCrumbs}>Horizontal</PageTitle>
         <Horizontal />
       </Route>
-      <Route path='/crafted/pages/wizards/vertical'>
+      <Route path='/pages/wizards/vertical'>
         <PageTitle breadcrumbs={wizardsBreadCrumbs}>Vertical</PageTitle>
         <Vertical />
       </Route>
-      <Redirect from='/crafted/pages/wizards' exact={true} to='/crafted/pages/wizards/horizontal' />
-      <Redirect to='/crafted/pages/wizards/horizontal' />
+      <Redirect from='/pages/wizards' exact={true} to='/pages/wizards/horizontal' />
+      <Redirect to='/pages/wizards/horizontal' />
     </Switch>
   )
 }
