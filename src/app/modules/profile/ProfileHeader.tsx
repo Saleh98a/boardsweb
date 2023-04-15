@@ -120,30 +120,6 @@ const ProfileHeader: React.FC = () => {
 
                     <div className='fw-bold fs-6 text-gray-400'>Projects</div>
                   </div>
-
-                  <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3'>
-                    <div className='d-flex align-items-center'>
-                      {/* <KTSVG
-                        path='/media/icons/duotune/arrows/arr065.svg'
-                        className='svg-icon-3 svg-icon-danger me-2'
-                      /> */}
-                      <div className='fs-2 fw-bolder'>75</div>
-                    </div>
-
-                    <div className='fw-bold fs-6 text-gray-400'>Tasks</div>
-                  </div>
-
-                  <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3'>
-                    <div className='d-flex align-items-center'>
-                      {/* <KTSVG
-                        path='/media/icons/duotune/arrows/arr066.svg'
-                        className='svg-icon-3 svg-icon-success me-2'
-                      /> */}
-                      <div className='fs-2 fw-bolder'>60%</div>
-                    </div>
-
-                    <div className='fw-bold fs-6 text-gray-400'>Done Tasks</div>
-                  </div>
                 </div>
               </div>
 
