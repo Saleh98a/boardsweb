@@ -30,17 +30,6 @@ export function register(email: string, firstName: string, lastName: string, pas
   });
 }
 
-// Server should return object => { result: boolean } (Is Email in DB)
-export function requestPassword(email: string) {
-  return axios.post<{ result: boolean }>(REQUEST_PASSWORD_URL, { email })
-}
-
-export function getUserByToken() {
-  // Authorization head should be fulfilled in interceptor.
-  // Check common redux folder => setupAxios
-  return axios.get<UserModel>(GET_USER_BY_ACCESSTOKEN_URL)
-}
-
 export function getUserByAuthCredentials(credentials: CredentialsModel) {
   // Authorization head should be fulfilled in interceptor.
   // Check common redux folder => setupAxios

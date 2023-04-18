@@ -27,30 +27,8 @@ const ProfilePage: React.FC = () => {
   return (
     <>
       <ProfileHeader />
-      <Switch>
-        <Route path='/pages/profile/overview'>
-          <PageTitle breadcrumbs={profileBreadCrumbs}>Overview</PageTitle>
-          <Overview />
-        </Route>
-        <Route path='/pages/profile/projects'>
-          <PageTitle breadcrumbs={profileBreadCrumbs}>Projects</PageTitle>
-          <Projects />
-        </Route>
-        <Route path='/pages/profile/campaigns'>
-          <PageTitle breadcrumbs={profileBreadCrumbs}>Campaigns</PageTitle>
-          <Campaigns />
-        </Route>
-        <Route path='/pages/profile/documents'>
-          <PageTitle breadcrumbs={profileBreadCrumbs}>Documents</PageTitle>
-          <Documents />
-        </Route>
-        <Route path='/pages/profile/connections'>
-          <PageTitle breadcrumbs={profileBreadCrumbs}>Connections</PageTitle>
-          <Connections />
-        </Route>
-        <Redirect from='/pages/profile' exact={true} to='/pages/profile/projects' />
-        <Redirect to='/pages/profile/projects' />
-      </Switch>
+      <PageTitle breadcrumbs={profileBreadCrumbs}>Projects</PageTitle>
+      <Projects />
     </>
   )
 }

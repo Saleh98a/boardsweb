@@ -1,10 +1,10 @@
-import {Action} from '@reduxjs/toolkit'
-import {persistReducer} from 'redux-persist'
+import { Action } from '@reduxjs/toolkit'
+import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import {put, takeLatest} from 'redux-saga/effects'
+import { put, takeLatest } from 'redux-saga/effects'
 import { CredentialsModel } from '../models/AuthModel'
-import {UserModel} from '../models/UserModel'
-import {getUserByAuthCredentials, getUserByToken} from './AuthCRUD'
+import { UserModel } from '../models/UserModel'
+import { getUserByAuthCredentials } from './AuthCRUD'
 
 export interface ActionWithPayload<T> extends Action {
   payload?: T
@@ -32,36 +32,36 @@ export interface IAuthState {
 }
 
 export const reducer = persistReducer(
-  {storage, key: 'v100-demo1-auth', whitelist: ['user', 'accessToken', 'credentials']},
+  { storage, key: 'v100-demo1-auth', whitelist: ['user', 'accessToken', 'credentials'] },
   (state: IAuthState = initialAuthState, action: ActionWithPayload<IAuthState>) => {
     switch (action.type) {
       case actionTypes.Login: {
         const accessToken = action.payload?.accessToken
         const credentials = _getAuthCredentials(action);
-        return {accessToken, user: undefined, credentials: credentials}
+        return { accessToken, user: undefined, credentials: credentials }
       }
 
       case actionTypes.Register: {
         const accessToken = action.payload?.accessToken
-        return {accessToken, user: undefined}
+        return { accessToken, user: undefined }
       }
 
       case actionTypes.Logout: {
-        return {accessToken: undefined, user: undefined, credentials: {email: '', password: ''}}
+        return { accessToken: undefined, user: undefined, credentials: { email: '', password: '' } }
       }
 
       case actionTypes.UserRequested: {
-        return {...state, user: undefined}
+        return { ...state, user: undefined }
       }
 
       case actionTypes.UserLoaded: {
         const user = action.payload?.user
-        return {...state, user}
+        return { ...state, user }
       }
 
       case actionTypes.SetUser: {
         const user = action.payload?.user
-        return {...state, user}
+        return { ...state, user }
       }
 
       default:
@@ -71,18 +71,18 @@ export const reducer = persistReducer(
 )
 
 export const actions = {
-  login: (accessToken: string, email: string, password: string) => ({type: actionTypes.Login, payload: {accessToken, email, password}}),
+  login: (accessToken: string, email: string, password: string) => ({ type: actionTypes.Login, payload: { accessToken, email, password } }),
   register: (accessToken: string) => ({
     type: actionTypes.Register,
-    payload: {accessToken},
+    payload: { accessToken },
   }),
-  logout: () => ({type: actionTypes.Logout, payload: {}}),
+  logout: () => ({ type: actionTypes.Logout, payload: {} }),
   requestUser: (payload: any) => ({
     type: actionTypes.UserRequested,
     payload: payload
   }),
-  fulfillUser: (user: UserModel) => ({type: actionTypes.UserLoaded, payload: {user}}),
-  setUser: (user: UserModel) => ({type: actionTypes.SetUser, payload: {user}}),
+  fulfillUser: (user: UserModel) => ({ type: actionTypes.UserLoaded, payload: { user } }),
+  setUser: (user: UserModel) => ({ type: actionTypes.SetUser, payload: { user } }),
 }
 
 export function* saga() {
@@ -97,23 +97,22 @@ export function* saga() {
 
   yield takeLatest(actionTypes.UserRequested, function* userRequested(payload) {
     const credentials = _getAuthCredentials(payload);
-    if(credentials && credentials.email && credentials.password){
-      const {data: user} = yield getUserByAuthCredentials(credentials)
+    if (credentials && credentials.email && credentials.password) {
+      const { data: user } = yield getUserByAuthCredentials(credentials)
       yield put(actions.fulfillUser(user))
     } else {
-      const {data: user} = yield getUserByToken()
-      yield put(actions.fulfillUser(user))
+      // TODO: shouldn't get here
     }
   })
 }
 
 
-function _getAuthCredentials(target: any): {email: string, password: string}|undefined {
-  if(!target || target === undefined || target === null)
+function _getAuthCredentials(target: any): { email: string, password: string } | undefined {
+  if (!target || target === undefined || target === null)
     return undefined;
-  else if(target.email && target.password && (typeof target.email === 'string') && (typeof target.password === 'string'))
-    return {email: target.email, password: target.password};
-  else if(target.payload && target.payload !== null && target.payload !== undefined && typeof target.payload !== 'undefined')
+  else if (target.email && target.password && (typeof target.email === 'string') && (typeof target.password === 'string'))
+    return { email: target.email, password: target.password };
+  else if (target.payload && target.payload !== null && target.payload !== undefined && typeof target.payload !== 'undefined')
     return _getAuthCredentials(target.payload);
   return undefined;
 }

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { Dropdown1 } from '../../../_metronic/partials'
 import { useLocation } from 'react-router-dom'
 import { useBarry } from '../../BarryContext'
-import { Employee } from '../../models/_types'
+import { Employee, Manager } from '../../models/_types'
 
 const ProfileHeader: React.FC = () => {
   const { currentUser } = useBarry();
@@ -14,7 +14,7 @@ const ProfileHeader: React.FC = () => {
   return (
     <div className='card mb-5 mb-xl-10'>
       <div className='card-body pt-9 pb-0'>
-        <div className='d-flex flex-wrap flex-sm-nowrap mb-3'>
+        <div className='d-flex flex-wrap flex-sm-nowrap mb-3 align-items-center'>
           <div className='me-7 mb-4'>
             <div className='symbol symbol-100px symbol-lg-160px symbol-fixed position-relative'>
               <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='Metornic' />
@@ -106,16 +106,12 @@ const ProfileHeader: React.FC = () => {
               </div> */}
             </div>
 
-            <div className='d-flex flex-wrap flex-stack'>
+            {/* <div className='d-flex flex-wrap flex-stack align-items-center'>
               <div className='d-flex flex-column flex-grow-1 pe-8'>
                 <div className='d-flex flex-wrap'>
                   <div className='border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3'>
                     <div className='d-flex align-items-center'>
-                      {/* <KTSVG
-                        path='/media/icons/duotune/arrows/arr066.svg'
-                        className='svg-icon-3 svg-icon-success me-2'
-                      /> */}
-                      <div className='fs-2 fw-bolder'>{currentUser ? (currentUser as Employee)?.projects.length ?? 0 : 0}</div>
+                      <div className='fs-2 fw-bolder'>{(currentUser instanceof Manager ? (currentUser as Employee)?.projects.length : (currentUser as Employee)?.epics.length) ?? 0}</div>
                     </div>
 
                     <div className='fw-bold fs-6 text-gray-400'>Projects</div>
@@ -123,7 +119,7 @@ const ProfileHeader: React.FC = () => {
                 </div>
               </div>
 
-              {/* <div className='d-flex align-items-center w-200px w-sm-300px flex-column mt-3'>
+              <div className='d-flex align-items-center w-200px w-sm-300px flex-column mt-3'>
                 <div className='d-flex justify-content-between w-100 mt-auto mb-2'>
                   <span className='fw-bold fs-6 text-gray-400'>Profile Compleation</span>
                   <span className='fw-bolder fs-6'>50%</span>
@@ -135,8 +131,8 @@ const ProfileHeader: React.FC = () => {
                     style={{width: '50%'}}
                   ></div>
                 </div>
-              </div> */}
-            </div>
+              </div>
+            </div> */}
           </div>
         </div>
 

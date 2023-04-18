@@ -111,14 +111,17 @@ export function Projects() {
             }
             else {
               const epic: Epic = pr as Epic;
+              const startDate = new Date(pr.assignment?.startDate);
+              const endDate = new Date(pr.assignment?.estimatedEndDate);
+              const dateNow = new Date();
               return <div className='col-md-6 col-xl-4' key={i} onClick={() => { didClickEpic(pr) }}>
                 <Card2
                   icon='/media/svg/brand-logos/xing-icon.svg'
                   badgeColor='primary'
-                  status='In Progress'
+                  status={startDate < dateNow && endDate > dateNow ? 'In Progress' : ''}
                   statusColor='primary'
                   title={pr.name ?? 'Unnamed Epic'}
-                  description={pr.description ?? ''}
+                  description={pr.description ?? 'No description'}
                   date={epic.assignment?.startDate ? new Date(epic.assignment?.startDate).toLocaleDateString() : ''}
                   budget={epic.assignment?.estimatedEndDate ? new Date(epic.assignment?.estimatedEndDate).toLocaleDateString() : ''}
                   progress={0}
@@ -132,53 +135,3 @@ export function Projects() {
     </>
   )
 }
-
-const users1: Array<IconUserModel> = [
-  { name: 'Emma Smith', avatar: '/media/avatars/150-1.jpg' },
-  { name: 'Rudy Stone', avatar: '/media/avatars/150-2.jpg' },
-  { name: 'Susan Redwood', initials: 'S', color: 'primary' },
-]
-
-const users2 = [
-  { name: 'Alan Warden', initials: 'A', color: 'warning' },
-  { name: 'Brian Cox', avatar: '/media/avatars/150-4.jpg' },
-]
-
-const users3 = [
-  { name: 'Mad Masy', avatar: '/media/avatars/150-1.jpg' },
-  { name: 'Cris Willson', avatar: '/media/avatars/150-2.jpg' },
-  { name: 'Mike Garcie', initials: 'M', color: 'info' },
-]
-
-const users4 = [
-  { name: 'Nich Warden', initials: 'N', color: 'warning' },
-  { name: 'Rob Otto', initials: 'R', color: 'success' },
-]
-
-const users5 = [
-  { name: 'Francis Mitcham', avatar: '/media/avatars/150-5.jpg' },
-  { name: 'Michelle Swanston', avatar: '/media/avatars/150-13.jpg' },
-  { name: 'Susan Redwood', initials: 'S', color: 'primary' },
-]
-
-const users6 = [
-  { name: 'Emma Smith', avatar: '/media/avatars/150-1.jpg' },
-  { name: 'Rudy Stone', avatar: '/media/avatars/150-2.jpg' },
-  { name: 'Susan Redwood', initials: 'S', color: 'primary' },
-]
-
-const users7 = [
-  { name: 'Meloday Macy', avatar: '/media/avatars/150-3.jpg' },
-  { name: 'Rabbin Watterman', initials: 'S', color: 'success' },
-]
-
-const users8 = [
-  { name: 'Emma Smith', avatar: '/media/avatars/150-1.jpg' },
-  { name: 'Rudy Stone', avatar: '/media/avatars/150-2.jpg' },
-  { name: 'Susan Redwood', initials: 'S', color: 'primary' },
-]
-
-const users9 = [
-  { name: 'Meloday Macy', avatar: '/media/avatars/150-3.jpg' },
-  { name: 'Rabbin Watterman', initials: 'S', color: 'danger' },
-]

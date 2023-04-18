@@ -46,7 +46,7 @@ const SchedulePage: FC = () => {
               <Card6
                 icon='/media/svg/brand-logos/xing-icon.svg'
                 badgeColor='primary'
-                status={startDate < dateNow && endDate > dateNow ? 'In Progress' : 'In Progress'}
+                status={startDate < dateNow && endDate > dateNow ? 'In Progress' : ''}
                 statusColor='primary'
                 title={pr.epic?.name ?? 'Unnamed Epic'}
                 description={pr.epic?.description ?? ''}

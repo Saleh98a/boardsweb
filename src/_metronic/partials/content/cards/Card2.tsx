@@ -35,19 +35,6 @@ const Card2: FC<Props> = ({
       to='/pages/profile/overview'
       className='card border border-2 border-gray-300 border-hover'
     >
-      <div className='card-header border-0 pt-9'>
-        <div className='card-title m-0'>
-          <div className='symbol symbol-50px w-50px bg-light'>
-            <img src={toAbsoluteUrl(icon)} alt='card2' className='p-3' />
-          </div>
-        </div>
-
-        <div className='card-toolbar'>
-          <span className={`badge badge-light-${badgeColor} fw-bolder me-auto px-4 py-3`}>
-            {status}
-          </span>
-        </div>
-      </div>
 
       <div className='card-body p-9'>
         <div className='fs-3 fw-bolder text-dark'>{title}</div>
@@ -65,20 +52,6 @@ const Card2: FC<Props> = ({
             <div className='fw-bold text-gray-400'>End Date</div>
           </div>
         </div>
-
-        <div
-          className='h-4px w-100 bg-light mb-5'
-          data-bs-toggle='tooltip'
-          title='This project completed'
-        >
-          <div
-            className={`bg-${statusColor} rounded h-4px`}
-            role='progressbar'
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-
-        <UsersList users={users} />
       </div>
     </Link>
   )

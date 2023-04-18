@@ -19,7 +19,7 @@ export function mockAuth(mock: MockAdapter) {
       )
 
       if (user) {
-        const auth = user.auth
+        const auth = user.auth;
         return [200, { ...auth, password: undefined }]
       }
     }
@@ -38,7 +38,6 @@ export function mockAuth(mock: MockAdapter) {
         lastName,
         username: `${firstName}-${lastName}`,
         password,
-        roles: [2], // Manager
         auth: {
           accountId: "1",
           email: "employee1@barry.com",
@@ -46,7 +45,6 @@ export function mockAuth(mock: MockAdapter) {
           // accessToken: 'access-token-' + Math.random(),
           // refreshToken: 'access-token-' + Math.random(),
         },
-        pic: process.env.PUBLIC_URL + '/media/users/default.jpg',
       }
 
       UsersTableMock.table.push(user)
