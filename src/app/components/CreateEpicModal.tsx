@@ -75,13 +75,13 @@ const CreateEpicModal: FC<CreateEpicModalProps> = ({ isVisible, onVisibility, on
             className="mb-3"
             controlId="exampleForm.ControlTextarea1"
           >
-            <Form.Label>Estimated Dration (Hours)</Form.Label>
+            <Form.Label>Estimated Duration (Days)</Form.Label>
             <Form.Control
               type="number"
               defaultValue={0}
               min={1}
               required={true}
-              onChange={(e) => { setDuration(parseInt(e.target.value)) }} />
+              onChange={(e) => { setDuration(parseInt(e.target.value) * 8) }} />
           </Form.Group>
         </Form>
       </Modal.Body>
